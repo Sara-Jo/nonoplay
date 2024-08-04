@@ -6,54 +6,12 @@ import SquareRoundedIcon from "@mui/icons-material/SquareRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-
-type CellState = "filled" | "crossed" | null;
-type GridState = CellState[][];
+import { GridState } from "@/types";
+import { generateRandomGrid } from "@/utils/generateRandomgrid";
+import { calculateNumbers } from "@/utils/calculateNumbers";
 
 const stage = 10;
 const initialLives = 3;
-
-const generateRandomGrid = (stage: number): GridState => {
-  return Array.from({ length: stage }, () =>
-    Array.from({ length: stage }, () =>
-      Math.random() > 0.5 ? "filled" : "crossed"
-    )
-  );
-};
-
-const calculateNumbers = (grid: GridState) => {
-  const rowNumbers = grid.map((row) => {
-    const numbers = [];
-    let count = 0;
-    row.forEach((cell) => {
-      if (cell === "filled") count++;
-      else if (count > 0) {
-        numbers.push(count);
-        count = 0;
-      }
-    });
-    if (count > 0) numbers.push(count);
-
-    return numbers.length ? numbers : [0];
-  });
-
-  const columnNumbers = Array.from({ length: stage }, (_, colIndex) => {
-    const numbers = [];
-    let count = 0;
-    grid.forEach((row) => {
-      if (row[colIndex] === "filled") count++;
-      else if (count > 0) {
-        numbers.push(count);
-        count = 0;
-      }
-    });
-    if (count > 0) numbers.push(count);
-
-    return numbers.length ? numbers : [0];
-  });
-
-  return { rowNumbers, columnNumbers };
-};
 
 export default function Home() {
   const [answerGrid, setAnswerGrid] = useState<GridState | null>(null);
