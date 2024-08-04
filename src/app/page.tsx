@@ -98,6 +98,20 @@ export default function Home() {
               return cell;
             })
           );
+
+          const cells = isRow
+            ? document.querySelectorAll(`.row-${index}`)
+            : document.querySelectorAll(`.col-${index}`);
+
+          cells.forEach((cell, cellIndex) => {
+            if (cellIndex <= i) {
+              cell.classList.add(styles.flash);
+              setTimeout(() => {
+                cell.classList.remove(styles.flash);
+              }, 500);
+            }
+          });
+
           return newGrid;
         });
         i++;
@@ -278,7 +292,7 @@ export default function Home() {
                   key={colIndex}
                   data-row={rowIndex}
                   data-col={colIndex}
-                  className={`${styles.cell} ${
+                  className={`row-${rowIndex} col-${colIndex} ${styles.cell} ${
                     cell === "filled"
                       ? styles.filled
                       : cell === "crossed"
