@@ -67,6 +67,25 @@ export default function Home() {
     setColumnNumbers(columnNumbers);
   }, []);
 
+  const handleCellClick = (rowIndex: number, colIndex: number) => {
+    if (grid[rowIndex][colIndex] === null) {
+      setGrid((prevGrid) =>
+        prevGrid.map((row, rIdx) =>
+          row.map((cell, cIdx) => {
+            if (rIdx === rowIndex && cIdx === colIndex) {
+              if (mode === "fill") {
+                return "filled";
+              } else {
+                return "crossed";
+              }
+            }
+            return cell;
+          })
+        )
+      );
+    }
+  };
+
   const toggleMode = () => {
     setMode((prevMode) => (prevMode === "fill" ? "exclude" : "fill"));
   };
@@ -97,7 +116,17 @@ export default function Home() {
               ))}
             </div>
             {row.map((cell, colIndex) => (
-              <div key={colIndex} className={styles.cell}></div>
+              <div
+                key={colIndex}
+                className={`${styles.cell} ${
+                  cell === "filled"
+                    ? styles.filled
+                    : cell === "crossed"
+                    ? styles.crossed
+                    : ""
+                }`}
+                onClick={() => handleCellClick(rowIndex, colIndex)}
+              ></div>
             ))}
           </div>
         ))}
@@ -106,10 +135,10 @@ export default function Home() {
       <div className={styles.toggleButton} onClick={toggleMode}>
         <div
           className={`${styles.toggleSwitch} ${
-            mode === "fill" ? styles.fill : styles.exclude
+            mode === "fill" ? styles.fill : styles.cross
           }`}
         >
-          {mode === "fill" ? <CloseRoundedIcon /> : <SquareRoundedIcon />}
+          {mode === "fill" ? <SquareRoundedIcon /> : <CloseRoundedIcon />}
         </div>
         <div className={styles.toggleIcon}>
           <CloseRoundedIcon sx={{ color: "black" }} />

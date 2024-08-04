@@ -23,6 +23,28 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  position: relative;
+}
+
+.cell.filled {
+  background-color: white;
+}
+
+.cell.crossed::before,
+.cell.crossed::after {
+  content: "";
+  position: absolute;
+  width: 4rem;
+  height: 2px;
+  background-color: white;
+}
+
+.cell.crossed::before {
+  transform: rotate(45deg);
+}
+
+.cell.crossed::after {
+  transform: rotate(-45deg);
 }
 
 .header {
@@ -92,10 +114,10 @@
   box-shadow: 0 0 10px #9a9a9a;
 }
 
-.toggleSwitch.fill {
+.toggleSwitch.cross {
   transform: translateX(0);
 }
 
-.toggleSwitch.exclude {
+.toggleSwitch.fill {
   transform: translateX(3rem);
 }
