@@ -22,6 +22,7 @@ export default function Home() {
   const [rowNumbers, setRowNumbers] = useState<number[][]>([]);
   const [columnNumbers, setColumnNumbers] = useState<number[][]>([]);
   const [lives, setLives] = useState(initialLives);
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     const newGrid = generateRandomGrid(stage);
@@ -55,12 +56,27 @@ export default function Home() {
     }
   };
 
+  const handleMouseDown = (rowIndex: number, colIndex: number) => {
+    setIsDragging(true);
+    handleCellClick(rowIndex, colIndex);
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleMouseEnter = (rowIndex: number, colIndex: number) => {
+    if (isDragging) {
+      handleCellClick(rowIndex, colIndex);
+    }
+  };
+
   const toggleMode = () => {
     setMode((prevMode) => (prevMode === "fill" ? "cross" : "fill"));
   };
 
   return (
-    <div className={styles.main}>
+    <div className={styles.main} onMouseUp={handleMouseUp}>
       <div className={styles.lives}>
         {Array.from({ length: initialLives }).map((_, index) => (
           <div key={index} className={styles.life}>
@@ -116,7 +132,8 @@ export default function Home() {
                   } ${isBoldRight ? styles.boldRight : ""} ${
                     isBoldBottom ? styles.boldBottom : ""
                   }`}
-                  onClick={() => handleCellClick(rowIndex, colIndex)}
+                  onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
+                  onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
                 ></div>
               );
             })}
