@@ -23,6 +23,7 @@ export default function Home() {
   const [columnNumbers, setColumnNumbers] = useState<number[][]>([]);
   const [lives, setLives] = useState(initialLives);
   const [isDragging, setIsDragging] = useState(false);
+  const [lifeRefs, setLifeRefs] = useState<HTMLDivElement[]>([]);
 
   useEffect(() => {
     const newGrid = generateRandomGrid(stage);
@@ -40,9 +41,18 @@ export default function Home() {
           : answerGrid[rowIndex][colIndex] === "crossed";
 
       if (!isCorrect) {
-        setLives((prevLives) => Math.max(prevLives - 1, 0));
-      }
+        setLives((prevLives) => {
+          const updatedLives = Math.max(prevLives - 1, 0);
 
+          if (lifeRefs[prevLives - 1]) {
+            lifeRefs[prevLives - 1].classList.add(styles.wiggle);
+          }
+
+          return updatedLives;
+        });
+
+        setIsDragging(false);
+      }
       setGrid((prevGrid) =>
         prevGrid.map((row, rIdx) =>
           row.map((cell, cIdx) => {
@@ -71,6 +81,12 @@ export default function Home() {
     }
   };
 
+  const addLifeRef = (ref: HTMLDivElement | null) => {
+    if (ref && !lifeRefs.includes(ref)) {
+      setLifeRefs((prevRefs) => [...prevRefs, ref]);
+    }
+  };
+
   const toggleMode = () => {
     setMode((prevMode) => (prevMode === "fill" ? "cross" : "fill"));
   };
@@ -79,11 +95,15 @@ export default function Home() {
     <div className={styles.main} onMouseUp={handleMouseUp}>
       <div className={styles.lives}>
         {Array.from({ length: initialLives }).map((_, index) => (
-          <div key={index} className={styles.life}>
+          <div
+            key={index}
+            className={`${styles.life} ${index >= lives ? styles.wiggle : ""}`}
+            ref={addLifeRef}
+          >
             {index < lives ? (
               <FavoriteIcon fontSize="large" sx={{ color: "red" }} />
             ) : (
-              <FavoriteBorderIcon fontSize="large" sx={{ color: "red" }} />
+              <FavoriteBorderIcon fontSize="large" sx={{ color: "gray" }} />
             )}
           </div>
         ))}
