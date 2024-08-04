@@ -6,12 +6,24 @@ import SquareRoundedIcon from "@mui/icons-material/SquareRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import { GridState } from "@/types";
+import { CellState, GridState } from "@/types";
 import { generateRandomGrid } from "@/utils/generateRandomgrid";
 import { calculateNumbers } from "@/utils/calculateNumbers";
 
 const stage = 10;
 const initialLives = 3;
+
+const updateCell = (
+  grid: GridState,
+  rowIndex: number,
+  colIndex: number,
+  value: CellState | null
+): GridState =>
+  grid.map((row, rIdx) =>
+    row.map((cell, cIdx) =>
+      rIdx === rowIndex && cIdx === colIndex ? value : cell
+    )
+  );
 
 export default function Home() {
   const [answerGrid, setAnswerGrid] = useState<GridState | null>(null);
@@ -24,6 +36,10 @@ export default function Home() {
   const [lives, setLives] = useState(initialLives);
   const [isDragging, setIsDragging] = useState(false);
   const [lifeRefs, setLifeRefs] = useState<HTMLDivElement[]>([]);
+  const [errorCell, setErrorCell] = useState<{
+    row: number;
+    col: number;
+  } | null>(null);
 
   useEffect(() => {
     const newGrid = generateRandomGrid(stage);
@@ -48,21 +64,34 @@ export default function Home() {
             lifeRefs[prevLives - 1].classList.add(styles.wiggle);
           }
 
+          setErrorCell({ row: rowIndex, col: colIndex });
+
+          setTimeout(() => {
+            setErrorCell(null);
+            setGrid((prevGrid) =>
+              updateCell(
+                prevGrid,
+                rowIndex,
+                colIndex,
+                answerGrid[rowIndex][colIndex]
+              )
+            );
+          }, 500);
+
           return updatedLives;
         });
 
         setIsDragging(false);
+      } else {
+        setGrid((prevGrid) =>
+          updateCell(
+            prevGrid,
+            rowIndex,
+            colIndex,
+            answerGrid[rowIndex][colIndex]
+          )
+        );
       }
-      setGrid((prevGrid) =>
-        prevGrid.map((row, rIdx) =>
-          row.map((cell, cIdx) => {
-            if (rIdx === rowIndex && cIdx === colIndex) {
-              return answerGrid[rowIndex][colIndex];
-            }
-            return cell;
-          })
-        )
-      );
     }
   };
 
@@ -137,6 +166,8 @@ export default function Home() {
               const isBoldTop = rowIndex % 5 === 0 || rowIndex === 0;
               const isBoldRight = colIndex === grid[0].length - 1;
               const isBoldBottom = rowIndex === grid.length - 1;
+              const isError =
+                errorCell?.row === rowIndex && errorCell?.col === colIndex;
 
               return (
                 <div
@@ -147,11 +178,11 @@ export default function Home() {
                       : cell === "crossed"
                       ? styles.crossed
                       : ""
-                  } ${isBoldLeft ? styles.boldLeft : ""} ${
-                    isBoldTop ? styles.boldTop : ""
-                  } ${isBoldRight ? styles.boldRight : ""} ${
-                    isBoldBottom ? styles.boldBottom : ""
-                  }`}
+                  } ${isError ? styles.cellError : ""} ${
+                    isBoldLeft ? styles.boldLeft : ""
+                  } ${isBoldTop ? styles.boldTop : ""} ${
+                    isBoldRight ? styles.boldRight : ""
+                  } ${isBoldBottom ? styles.boldBottom : ""}`}
                   onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
                   onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
                 ></div>

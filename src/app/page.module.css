@@ -30,6 +30,11 @@
   background-color: white;
 }
 
+.cellError {
+  background-color: red;
+  transition: background-color 0.5s ease;
+}
+
 .cell.crossed::before,
 .cell.crossed::after {
   content: "";
