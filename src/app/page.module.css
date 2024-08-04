@@ -1,7 +1,14 @@
+.main {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .grid {
   display: flex;
   flex-direction: column;
-  margin: 2rem;
 }
 
 .row {
@@ -16,4 +23,44 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+}
+
+.toggleButton {
+  width: 6rem;
+  height: 3rem;
+  margin-top: 3rem;
+  border-radius: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  cursor: pointer;
+  background-color: #ddd;
+}
+
+.toggleIcon {
+  padding: 0.7rem;
+  display: flex;
+  align-items: center;
+}
+
+.toggleSwitch {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background-color: black;
+  position: absolute;
+  transition: transform 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px #9a9a9a;
+}
+
+.toggleSwitch.fill {
+  transform: translateX(0);
+}
+
+.toggleSwitch.exclude {
+  transform: translateX(3rem);
 }
