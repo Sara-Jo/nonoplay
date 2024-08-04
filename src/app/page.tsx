@@ -6,7 +6,7 @@ import SquareRoundedIcon from "@mui/icons-material/SquareRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import { CellState, GridState } from "@/types";
+import { CellState, GridState, Mode } from "@/types";
 import { generateRandomGrid } from "@/utils/generateRandomgrid";
 import { calculateNumbers } from "@/utils/calculateNumbers";
 
@@ -28,9 +28,9 @@ const updateCell = (
 export default function Home() {
   const [answerGrid, setAnswerGrid] = useState<GridState | null>(null);
   const [grid, setGrid] = useState<GridState>(
-    Array(10).fill(Array(10).fill(null))
+    Array(stage).fill(Array(stage).fill(null))
   );
-  const [mode, setMode] = useState<"fill" | "cross">("fill");
+  const [mode, setMode] = useState<Mode>("fill");
   const [rowNumbers, setRowNumbers] = useState<number[][]>([]);
   const [columnNumbers, setColumnNumbers] = useState<number[][]>([]);
   const [lives, setLives] = useState(initialLives);
@@ -48,6 +48,64 @@ export default function Home() {
     setRowNumbers(rowNumbers);
     setColumnNumbers(columnNumbers);
   }, []);
+
+  const isRowCompleted = (
+    grid: GridState,
+    rowIndex: number,
+    answerGrid: GridState | null
+  ): boolean => {
+    if (!answerGrid) return false;
+
+    return grid[rowIndex].every(
+      (cell, colIndex) =>
+        answerGrid[rowIndex][colIndex] === "crossed" ||
+        (cell === "filled" && answerGrid[rowIndex][colIndex] === "filled")
+    );
+  };
+
+  const isColumnCompleted = (
+    grid: GridState,
+    colIndex: number,
+    answerGrid: GridState | null
+  ): boolean => {
+    if (!answerGrid) return false;
+
+    return grid.every(
+      (row, rowIndex) =>
+        answerGrid[rowIndex][colIndex] === "crossed" ||
+        (row[colIndex] === "filled" &&
+          answerGrid[rowIndex][colIndex] === "filled")
+    );
+  };
+
+  const fillRemainingCells = (
+    grid: GridState,
+    index: number,
+    isRow: boolean
+  ) => {
+    let i = 0;
+    const interval = setInterval(() => {
+      if (i < grid.length) {
+        setGrid((prevGrid) => {
+          const newGrid = prevGrid.map((row, rowIndex) =>
+            row.map((cell, colIndex) => {
+              if (isRow && rowIndex === index && cell === null) {
+                return colIndex <= i ? "crossed" : cell;
+              }
+              if (!isRow && colIndex === index && cell === null) {
+                return rowIndex <= i ? "crossed" : cell;
+              }
+              return cell;
+            })
+          );
+          return newGrid;
+        });
+        i++;
+      } else {
+        clearInterval(interval);
+      }
+    }, 50);
+  };
 
   const handleCellClick = (rowIndex: number, colIndex: number) => {
     if (answerGrid && grid[rowIndex][colIndex] === null) {
@@ -83,14 +141,24 @@ export default function Home() {
 
         setIsDragging(false);
       } else {
-        setGrid((prevGrid) =>
-          updateCell(
-            prevGrid,
-            rowIndex,
-            colIndex,
-            answerGrid[rowIndex][colIndex]
-          )
+        const newGrid = updateCell(
+          grid,
+          rowIndex,
+          colIndex,
+          answerGrid[rowIndex][colIndex]
         );
+
+        const rowCompleted = isRowCompleted(newGrid, rowIndex, answerGrid);
+        const columnCompleted = isColumnCompleted(
+          newGrid,
+          colIndex,
+          answerGrid
+        );
+
+        setGrid(newGrid);
+
+        if (rowCompleted) fillRemainingCells(newGrid, rowIndex, true);
+        if (columnCompleted) fillRemainingCells(newGrid, colIndex, false);
       }
     }
   };

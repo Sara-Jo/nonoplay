@@ -35,6 +35,19 @@
   transition: background-color 0.5s ease;
 }
 
+@keyframes crossFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.crossed {
+  animation: crossFade 0.2s ease-in-out;
+}
+
 .cell.crossed::before,
 .cell.crossed::after {
   content: "";
