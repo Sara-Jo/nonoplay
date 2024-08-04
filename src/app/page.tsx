@@ -4,15 +4,20 @@ import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import SquareRoundedIcon from "@mui/icons-material/SquareRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 
 type CellState = "filled" | "crossed" | null;
 type GridState = CellState[][];
 
 const stage = 10;
+const initialLives = 3;
 
 const generateRandomGrid = (stage: number): GridState => {
   return Array.from({ length: stage }, () =>
-    Array.from({ length: stage }, () => (Math.random() > 0.5 ? "filled" : null))
+    Array.from({ length: stage }, () =>
+      Math.random() > 0.5 ? "filled" : "crossed"
+    )
   );
 };
 
@@ -55,9 +60,10 @@ export default function Home() {
   const [grid, setGrid] = useState<GridState>(
     Array(10).fill(Array(10).fill(null))
   );
-  const [mode, setMode] = useState<"fill" | "exclude">("fill");
+  const [mode, setMode] = useState<"fill" | "cross">("fill");
   const [rowNumbers, setRowNumbers] = useState<number[][]>([]);
   const [columnNumbers, setColumnNumbers] = useState<number[][]>([]);
+  const [lives, setLives] = useState(initialLives);
 
   useEffect(() => {
     const newGrid = generateRandomGrid(stage);
@@ -68,16 +74,21 @@ export default function Home() {
   }, []);
 
   const handleCellClick = (rowIndex: number, colIndex: number) => {
-    if (grid[rowIndex][colIndex] === null) {
+    if (answerGrid && grid[rowIndex][colIndex] === null) {
+      const isCorrect =
+        mode === "fill"
+          ? answerGrid[rowIndex][colIndex] === "filled"
+          : answerGrid[rowIndex][colIndex] === "crossed";
+
+      if (!isCorrect) {
+        setLives((prevLives) => Math.max(prevLives - 1, 0));
+      }
+
       setGrid((prevGrid) =>
         prevGrid.map((row, rIdx) =>
           row.map((cell, cIdx) => {
             if (rIdx === rowIndex && cIdx === colIndex) {
-              if (mode === "fill") {
-                return "filled";
-              } else {
-                return "crossed";
-              }
+              return answerGrid[rowIndex][colIndex];
             }
             return cell;
           })
@@ -87,11 +98,23 @@ export default function Home() {
   };
 
   const toggleMode = () => {
-    setMode((prevMode) => (prevMode === "fill" ? "exclude" : "fill"));
+    setMode((prevMode) => (prevMode === "fill" ? "cross" : "fill"));
   };
 
   return (
     <div className={styles.main}>
+      <div className={styles.lives}>
+        {Array.from({ length: initialLives }).map((_, index) => (
+          <div key={index} className={styles.life}>
+            {index < lives ? (
+              <FavoriteIcon fontSize="large" sx={{ color: "red" }} />
+            ) : (
+              <FavoriteBorderIcon fontSize="large" sx={{ color: "red" }} />
+            )}
+          </div>
+        ))}
+      </div>
+
       <div className={styles.header}>
         <div className={styles.emptyCorner}></div>
         {columnNumbers.map((numbers, colIndex) => (
