@@ -18,7 +18,7 @@
 .cell {
   width: 3rem;
   height: 3rem;
-  border: 1px solid #ccc;
+  border: 1px solid grey;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -34,7 +34,7 @@
 .cell.crossed::after {
   content: "";
   position: absolute;
-  width: 4rem;
+  width: 2.2rem;
   height: 2px;
   background-color: white;
 }
@@ -45,6 +45,22 @@
 
 .cell.crossed::after {
   transform: rotate(-45deg);
+}
+
+.cell.boldLeft {
+  border-left: 2px solid white;
+}
+
+.cell.boldTop {
+  border-top: 2px solid white;
+}
+
+.cell.boldRight {
+  border-right: 2px solid white;
+}
+
+.cell.boldBottom {
+  border-bottom: 2px solid white;
 }
 
 .header {

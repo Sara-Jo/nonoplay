@@ -115,19 +115,30 @@ export default function Home() {
                 </div>
               ))}
             </div>
-            {row.map((cell, colIndex) => (
-              <div
-                key={colIndex}
-                className={`${styles.cell} ${
-                  cell === "filled"
-                    ? styles.filled
-                    : cell === "crossed"
-                    ? styles.crossed
-                    : ""
-                }`}
-                onClick={() => handleCellClick(rowIndex, colIndex)}
-              ></div>
-            ))}
+            {row.map((cell, colIndex) => {
+              const isBoldLeft = colIndex % 5 === 0 || colIndex === 0;
+              const isBoldTop = rowIndex % 5 === 0 || rowIndex === 0;
+              const isBoldRight = colIndex === grid[0].length - 1;
+              const isBoldBottom = rowIndex === grid.length - 1;
+
+              return (
+                <div
+                  key={colIndex}
+                  className={`${styles.cell} ${
+                    cell === "filled"
+                      ? styles.filled
+                      : cell === "crossed"
+                      ? styles.crossed
+                      : ""
+                  } ${isBoldLeft ? styles.boldLeft : ""} ${
+                    isBoldTop ? styles.boldTop : ""
+                  } ${isBoldRight ? styles.boldRight : ""} ${
+                    isBoldBottom ? styles.boldBottom : ""
+                  }`}
+                  onClick={() => handleCellClick(rowIndex, colIndex)}
+                ></div>
+              );
+            })}
           </div>
         ))}
       </div>
