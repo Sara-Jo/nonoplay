@@ -110,6 +110,37 @@ export default function Home() {
     }
   };
 
+  const handleTouchStart = (
+    event: React.TouchEvent<HTMLDivElement>,
+    rowIndex: number,
+    colIndex: number
+  ) => {
+    event.preventDefault();
+    setIsDragging(true);
+    handleCellClick(rowIndex, colIndex);
+  };
+
+  const handleTouchMove = (event: React.TouchEvent<HTMLDivElement>) => {
+    if (isDragging) {
+      const touch = event.touches[0];
+      const element = document.elementFromPoint(touch.clientX, touch.clientY);
+      if (element) {
+        const cell = element.closest(`.${styles.cell}`);
+        if (cell) {
+          const row = cell.getAttribute("data-row");
+          const col = cell.getAttribute("data-col");
+          if (row && col) {
+            handleCellClick(parseInt(row), parseInt(col));
+          }
+        }
+      }
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+  };
+
   const addLifeRef = (ref: HTMLDivElement | null) => {
     if (ref && !lifeRefs.includes(ref)) {
       setLifeRefs((prevRefs) => [...prevRefs, ref]);
@@ -121,7 +152,12 @@ export default function Home() {
   };
 
   return (
-    <div className={styles.main} onMouseUp={handleMouseUp}>
+    <div
+      className={styles.main}
+      onMouseUp={handleMouseUp}
+      onTouchEnd={handleTouchEnd}
+      onTouchMove={handleTouchMove}
+    >
       <div className={styles.lives}>
         {Array.from({ length: initialLives }).map((_, index) => (
           <div
@@ -172,6 +208,8 @@ export default function Home() {
               return (
                 <div
                   key={colIndex}
+                  data-row={rowIndex}
+                  data-col={colIndex}
                   className={`${styles.cell} ${
                     cell === "filled"
                       ? styles.filled
@@ -185,6 +223,7 @@ export default function Home() {
                   } ${isBoldBottom ? styles.boldBottom : ""}`}
                   onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
                   onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
+                  onTouchStart={(e) => handleTouchStart(e, rowIndex, colIndex)}
                 ></div>
               );
             })}
