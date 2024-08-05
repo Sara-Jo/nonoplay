@@ -24,7 +24,7 @@
 }
 
 .cell {
-  border: 1px solid grey;
+  border: 1px solid var(--light-gray);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -53,7 +53,7 @@
 }
 
 .cell.filled {
-  background-color: white;
+  background-color: var(--dark-color);
 }
 
 .cellError {
@@ -80,7 +80,7 @@
   position: absolute;
   width: 80%;
   height: 2px;
-  background-color: white;
+  background-color: var(--dark-color);
 }
 
 .cell.crossed::before {
@@ -92,24 +92,24 @@
 }
 
 .cell.boldLeft {
-  border-left: 2px solid white;
+  border-left: 2px solid black;
 }
 
 .cell.boldTop {
-  border-top: 2px solid white;
+  border-top: 2px solid black;
 }
 
 .cell.boldRight {
-  border-right: 2px solid white;
+  border-right: 2px solid black;
 }
 
 .cell.boldBottom {
-  border-bottom: 2px solid white;
+  border-bottom: 2px solid black;
 }
 
 @keyframes flash {
   0% {
-    background-color: yellow;
+    background-color: var(--light-color);
   }
   100% {
     background-color: transparent;
@@ -142,7 +142,7 @@
 
 .life.wiggle {
   animation: wiggle 0.3s ease;
-  color: gray;
+  color: var(--light-gray);
 }
 
 @keyframes wiggle {
@@ -186,17 +186,17 @@
 }
 
 .numsWrapper {
-  background-color: #9a9a9a;
+  background-color: var(--shade-color);
   border-radius: 0.2rem;
   display: flex;
-
   align-items: center;
   justify-content: end;
 }
 
 .completed {
-  background-color: white;
-  color: gray;
+  background-color: var(--background-color);
+  border: 1px solid var(--light-gray);
+  color: var(--light-gray);
 }
 
 .colNumsWrapper {
@@ -264,7 +264,7 @@
   justify-content: space-between;
   position: relative;
   cursor: pointer;
-  background-color: #ddd;
+  background-color: var(--shade-color);
 }
 
 .toggleIcon {
@@ -277,13 +277,13 @@
   width: 3rem;
   height: 3rem;
   border-radius: 50%;
-  background-color: black;
+  background-color: white;
   position: absolute;
   transition: transform 0.3s;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 10px #9a9a9a;
+  box-shadow: 0 0 10px var(--light-gray);
 }
 
 .toggleSwitch.cross {
