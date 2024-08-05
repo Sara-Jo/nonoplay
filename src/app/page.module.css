@@ -74,7 +74,7 @@
 .cell.crossed::after {
   content: "";
   position: absolute;
-  width: 2.2rem;
+  width: 80%;
   height: 2px;
   background-color: white;
 }
