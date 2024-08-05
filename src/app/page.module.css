@@ -194,6 +194,11 @@
   justify-content: end;
 }
 
+.completed {
+  background-color: white;
+  color: gray;
+}
+
 .colNumsWrapper {
   flex-direction: column;
   width: 90%;

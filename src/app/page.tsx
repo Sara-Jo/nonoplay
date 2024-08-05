@@ -40,6 +40,8 @@ export default function Home() {
     row: number;
     col: number;
   } | null>(null);
+  const [completedRows, setCompletedRows] = useState<number[]>([]);
+  const [completedColumns, setCompletedColumns] = useState<number[]>([]);
 
   useEffect(() => {
     const newGrid = generateRandomGrid(level);
@@ -117,6 +119,11 @@ export default function Home() {
         i++;
       } else {
         clearInterval(interval);
+        if (isRow) {
+          setCompletedRows((prevRows) => [...prevRows, index]);
+        } else {
+          setCompletedColumns((prevColumns) => [...prevColumns, index]);
+        }
       }
     }, 50);
   };
@@ -282,7 +289,11 @@ export default function Home() {
                 styles[`columnNumbers-${level}`]
               }`}
             >
-              <div className={`${styles.numsWrapper} ${styles.colNumsWrapper}`}>
+              <div
+                className={`${styles.numsWrapper} ${styles.colNumsWrapper} ${
+                  completedColumns.includes(colIndex) ? styles.completed : ""
+                }`}
+              >
                 {numbers.map((num, idx) => (
                   <div
                     key={idx}
@@ -306,7 +317,9 @@ export default function Home() {
                 }`}
               >
                 <div
-                  className={`${styles.numsWrapper} ${styles.rowNumsWrapper}`}
+                  className={`${styles.numsWrapper} ${styles.rowNumsWrapper} ${
+                    completedRows.includes(rowIndex) ? styles.completed : ""
+                  }`}
                 >
                   {rowNumbers[rowIndex]?.map((num, idx) => (
                     <div
