@@ -273,74 +273,112 @@ export default function Home() {
         ))}
       </div>
 
-      <div className={styles.header}>
-        <div className={styles.emptyCorner}></div>
-        {columnNumbers.map((numbers, colIndex) => (
-          <div
-            key={colIndex}
-            className={`${styles.columnNumbers} ${
-              styles[`columnNumbers-${level}`]
-            }`}
-          >
-            {numbers.map((num, idx) => (
+      <div className={styles.gridContainer}>
+        <div className={styles.header}>
+          {columnNumbers.map((numbers, colIndex) => (
+            <div
+              key={colIndex}
+              className={`${styles.columnNumbers} ${
+                styles[`columnNumbers-${level}`]
+              }`}
+            >
+              <div className={`${styles.numsWrapper} ${styles.colNumsWrapper}`}>
+                {numbers.map((num, idx) => (
+                  <div
+                    key={idx}
+                    className={`${styles.number} ${styles[`number-${level}`]}`}
+                  >
+                    {num}
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className={styles.gridWrapper}>
+          <div>
+            {grid.map((row, rowIndex) => (
               <div
-                key={idx}
-                className={`${styles.number} ${styles[`number-${level}`]}`}
+                key={rowIndex}
+                className={`${styles.rowNumbers} ${
+                  styles[`rowNumbers-${level}`]
+                }`}
               >
-                {num}
+                <div
+                  className={`${styles.numsWrapper} ${styles.rowNumsWrapper}`}
+                >
+                  {rowNumbers[rowIndex]?.map((num, idx) => (
+                    <div
+                      key={idx}
+                      className={`${styles.number} ${
+                        styles[`number-${level}`]
+                      }`}
+                    >
+                      {num}
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
-        ))}
-      </div>
+          <div className={styles.grid}>
+            {grid?.map((row, rowIndex) => (
+              <div key={rowIndex} className={styles.row}>
+                {/* <div className={styles.rowNumbers}>
+                  <div
+                    className={`${styles.numsWrapper} ${styles.rowNumsWrapper}`}
+                  >
+                    {rowNumbers[rowIndex]?.map((num, idx) => (
+                      <div
+                        key={idx}
+                        className={`${styles.number} ${
+                          styles[`number-${level}`]
+                        }`}
+                      >
+                        {num}
+                      </div>
+                    ))}
+                  </div>
+                </div> */}
+                {row.map((cell, colIndex) => {
+                  const isBoldLeft = colIndex % 5 === 0 || colIndex === 0;
+                  const isBoldTop = rowIndex % 5 === 0 || rowIndex === 0;
+                  const isBoldRight = colIndex === grid[0].length - 1;
+                  const isBoldBottom = rowIndex === grid.length - 1;
+                  const isError =
+                    errorCell?.row === rowIndex && errorCell?.col === colIndex;
 
-      <div className={styles.grid}>
-        {grid?.map((row, rowIndex) => (
-          <div key={rowIndex} className={styles.row}>
-            <div className={styles.rowNumbers}>
-              {rowNumbers[rowIndex]?.map((num, idx) => (
-                <div
-                  key={idx}
-                  className={`${styles.number} ${styles[`number-${level}`]}`}
-                >
-                  {num}
-                </div>
-              ))}
-            </div>
-            {row.map((cell, colIndex) => {
-              const isBoldLeft = colIndex % 5 === 0 || colIndex === 0;
-              const isBoldTop = rowIndex % 5 === 0 || rowIndex === 0;
-              const isBoldRight = colIndex === grid[0].length - 1;
-              const isBoldBottom = rowIndex === grid.length - 1;
-              const isError =
-                errorCell?.row === rowIndex && errorCell?.col === colIndex;
-
-              return (
-                <div
-                  key={colIndex}
-                  data-row={rowIndex}
-                  data-col={colIndex}
-                  className={`row-${rowIndex} col-${colIndex} ${
-                    styles[`cell-${level}`]
-                  } ${styles.cell} ${
-                    cell === "filled"
-                      ? styles.filled
-                      : cell === "crossed"
-                      ? styles.crossed
-                      : ""
-                  } ${isError ? styles.cellError : ""} ${
-                    isBoldLeft ? styles.boldLeft : ""
-                  } ${isBoldTop ? styles.boldTop : ""} ${
-                    isBoldRight ? styles.boldRight : ""
-                  } ${isBoldBottom ? styles.boldBottom : ""}`}
-                  onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
-                  onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
-                  onTouchStart={(e) => handleTouchStart(e, rowIndex, colIndex)}
-                ></div>
-              );
-            })}
+                  return (
+                    <div
+                      key={colIndex}
+                      data-row={rowIndex}
+                      data-col={colIndex}
+                      className={`row-${rowIndex} col-${colIndex} ${
+                        styles[`cell-${level}`]
+                      } ${styles.cell} ${
+                        cell === "filled"
+                          ? styles.filled
+                          : cell === "crossed"
+                          ? styles.crossed
+                          : ""
+                      } ${isError ? styles.cellError : ""} ${
+                        isBoldLeft ? styles.boldLeft : ""
+                      } ${isBoldTop ? styles.boldTop : ""} ${
+                        isBoldRight ? styles.boldRight : ""
+                      } ${isBoldBottom ? styles.boldBottom : ""}`}
+                      onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
+                      onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
+                      onTouchStart={(e) =>
+                        handleTouchStart(e, rowIndex, colIndex)
+                      }
+                    ></div>
+                  );
+                })}
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
 
       <div className={styles.toggleButton} onClick={toggleMode}>
