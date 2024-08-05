@@ -10,7 +10,6 @@ import { CellState, GridState, Mode } from "@/types";
 import { generateRandomGrid } from "@/utils/generateRandomgrid";
 import { calculateNumbers } from "@/utils/calculateNumbers";
 
-const stage = 10;
 const initialLives = 3;
 
 const updateCell = (
@@ -26,9 +25,10 @@ const updateCell = (
   );
 
 export default function Home() {
+  const [level, setLevel] = useState<number>(10);
   const [answerGrid, setAnswerGrid] = useState<GridState | null>(null);
   const [grid, setGrid] = useState<GridState>(
-    Array(stage).fill(Array(stage).fill(null))
+    Array(level).fill(Array(level).fill(null))
   );
   const [mode, setMode] = useState<Mode>("fill");
   const [rowNumbers, setRowNumbers] = useState<number[][]>([]);
@@ -42,12 +42,12 @@ export default function Home() {
   } | null>(null);
 
   useEffect(() => {
-    const newGrid = generateRandomGrid(stage);
+    const newGrid = generateRandomGrid(level);
     setAnswerGrid(newGrid);
     const { rowNumbers, columnNumbers } = calculateNumbers(newGrid);
     setRowNumbers(rowNumbers);
     setColumnNumbers(columnNumbers);
-  }, []);
+  }, [level]);
 
   const isRowCompleted = (
     grid: GridState,
@@ -233,6 +233,13 @@ export default function Home() {
     setMode((prevMode) => (prevMode === "fill" ? "cross" : "fill"));
   };
 
+  const handleLevelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const newLevel = parseInt(event.target.value);
+    setLevel(newLevel);
+    setGrid(Array(newLevel).fill(Array(newLevel).fill(null)));
+    setLives(3);
+  };
+
   return (
     <div
       className={styles.main}
@@ -240,6 +247,16 @@ export default function Home() {
       onTouchEnd={handleTouchEnd}
       onTouchMove={handleTouchMove}
     >
+      <div className={styles.levelSelector}>
+        <label htmlFor="level">Select level: </label>
+        <select id="level" onChange={handleLevelChange} value={level}>
+          <option value={5}>5x5</option>
+          <option value={10}>10x10</option>
+          <option value={15}>15x15</option>
+          <option value={20}>20x20</option>
+        </select>
+      </div>
+
       <div className={styles.lives}>
         {Array.from({ length: initialLives }).map((_, index) => (
           <div
