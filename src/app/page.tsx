@@ -276,9 +276,17 @@ export default function Home() {
       <div className={styles.header}>
         <div className={styles.emptyCorner}></div>
         {columnNumbers.map((numbers, colIndex) => (
-          <div key={colIndex} className={styles.columnNumbers}>
+          <div
+            key={colIndex}
+            className={`${styles.columnNumbers} ${
+              styles[`columnNumbers-${level}`]
+            }`}
+          >
             {numbers.map((num, idx) => (
-              <div key={idx} className={styles.number}>
+              <div
+                key={idx}
+                className={`${styles.number} ${styles[`number-${level}`]}`}
+              >
                 {num}
               </div>
             ))}
@@ -291,7 +299,10 @@ export default function Home() {
           <div key={rowIndex} className={styles.row}>
             <div className={styles.rowNumbers}>
               {rowNumbers[rowIndex]?.map((num, idx) => (
-                <div key={idx} className={styles.number}>
+                <div
+                  key={idx}
+                  className={`${styles.number} ${styles[`number-${level}`]}`}
+                >
                   {num}
                 </div>
               ))}
@@ -309,7 +320,9 @@ export default function Home() {
                   key={colIndex}
                   data-row={rowIndex}
                   data-col={colIndex}
-                  className={`row-${rowIndex} col-${colIndex} ${styles.cell} ${
+                  className={`row-${rowIndex} col-${colIndex} ${
+                    styles[`cell-${level}`]
+                  } ${styles.cell} ${
                     cell === "filled"
                       ? styles.filled
                       : cell === "crossed"
