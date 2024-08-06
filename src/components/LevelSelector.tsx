@@ -5,21 +5,29 @@ interface LevelSelectorProps {
   onSelectLevel: (level: number) => void;
 }
 
+const levels: { label: string; value: number }[] = [
+  { label: "Easy", value: 5 },
+  { label: "Medium", value: 10 },
+  { label: "Hard", value: 15 },
+  { label: "Expert", value: 20 },
+];
+
 const LevelSelector: React.FC<LevelSelectorProps> = ({
   selectedLevel,
   onSelectLevel,
 }) => {
   return (
     <div className={styles.levelSelector}>
-      {[5, 10, 15, 20].map((level) => (
+      {levels.map(({ label, value }) => (
         <button
-          key={level}
+          key={value}
           className={`${styles.levelButton} ${
-            selectedLevel === level ? styles.selected : ""
+            selectedLevel === value ? styles.selected : ""
           }`}
-          onClick={() => onSelectLevel(level)}
+          onClick={() => onSelectLevel(value)}
         >
-          {level}
+          <p className={styles.label}>{label}</p>
+          <p className={styles.value}>{`${value} x ${value}`}</p>
         </button>
       ))}
     </div>
