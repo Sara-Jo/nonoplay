@@ -9,6 +9,7 @@ import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { CellState, GridState, Mode } from "@/types";
 import { generateRandomGrid } from "@/utils/generateRandomgrid";
 import { calculateNumbers } from "@/utils/calculateNumbers";
+import Grid from "@/components/Grid";
 
 const initialLives = 3;
 
@@ -280,103 +281,21 @@ export default function Home() {
         ))}
       </div>
 
-      <div className={styles.gridContainer}>
-        <div className={styles.header}>
-          {columnNumbers.map((numbers, colIndex) => (
-            <div
-              key={colIndex}
-              className={`${styles.columnNumbers} ${
-                styles[`columnNumbers-${level}`]
-              }`}
-            >
-              <div
-                className={`${styles.numsWrapper} ${styles.colNumsWrapper} ${
-                  completedColumns.includes(colIndex) ? styles.completed : ""
-                }`}
-              >
-                {numbers.map((num, idx) => (
-                  <div
-                    key={idx}
-                    className={`${styles.number} ${styles[`number-${level}`]}`}
-                  >
-                    {num}
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className={styles.gridWrapper}>
-          <div>
-            {grid.map((row, rowIndex) => (
-              <div
-                key={rowIndex}
-                className={`${styles.rowNumbers} ${
-                  styles[`rowNumbers-${level}`]
-                }`}
-              >
-                <div
-                  className={`${styles.numsWrapper} ${styles.rowNumsWrapper} ${
-                    completedRows.includes(rowIndex) ? styles.completed : ""
-                  }`}
-                >
-                  {rowNumbers[rowIndex]?.map((num, idx) => (
-                    <div
-                      key={idx}
-                      className={`${styles.number} ${
-                        styles[`number-${level}`]
-                      }`}
-                    >
-                      {num}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className={styles.grid}>
-            {grid?.map((row, rowIndex) => (
-              <div key={rowIndex} className={styles.row}>
-                {row.map((cell, colIndex) => {
-                  const isBoldLeft = colIndex % 5 === 0 || colIndex === 0;
-                  const isBoldTop = rowIndex % 5 === 0 || rowIndex === 0;
-                  const isBoldRight = colIndex === grid[0].length - 1;
-                  const isBoldBottom = rowIndex === grid.length - 1;
-                  const isError =
-                    errorCell?.row === rowIndex && errorCell?.col === colIndex;
-
-                  return (
-                    <div
-                      key={colIndex}
-                      data-row={rowIndex}
-                      data-col={colIndex}
-                      className={`row-${rowIndex} col-${colIndex} ${
-                        styles[`cell-${level}`]
-                      } ${styles.cell} ${
-                        cell === "filled"
-                          ? styles.filled
-                          : cell === "crossed"
-                          ? styles.crossed
-                          : ""
-                      } ${isError ? styles.cellError : ""} ${
-                        isBoldLeft ? styles.boldLeft : ""
-                      } ${isBoldTop ? styles.boldTop : ""} ${
-                        isBoldRight ? styles.boldRight : ""
-                      } ${isBoldBottom ? styles.boldBottom : ""}`}
-                      onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
-                      onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
-                      onTouchStart={(e) =>
-                        handleTouchStart(e, rowIndex, colIndex)
-                      }
-                    ></div>
-                  );
-                })}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      <Grid
+        grid={grid}
+        level={level}
+        errorCell={errorCell}
+        completedRows={completedRows}
+        completedColumns={completedColumns}
+        columnNumbers={columnNumbers}
+        rowNumbers={rowNumbers}
+        isDragging={isDragging}
+        handleMouseDown={handleMouseDown}
+        handleMouseEnter={handleMouseEnter}
+        handleTouchStart={handleTouchStart}
+        handleTouchMove={handleTouchMove}
+        handleTouchEnd={handleTouchEnd}
+      />
 
       <div className={styles.toggleButton} onClick={toggleMode}>
         <div
