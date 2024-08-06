@@ -257,10 +257,10 @@ export default function Home() {
       <div className={styles.levelSelector}>
         <label htmlFor="level">Select level: </label>
         <select id="level" onChange={handleLevelChange} value={level}>
-          <option value={5}>5x5</option>
-          <option value={10}>10x10</option>
-          <option value={15}>15x15</option>
-          <option value={20}>20x20</option>
+          <option value={5}>Easy (5x5)</option>
+          <option value={10}>Medium (10x10)</option>
+          <option value={15}>Hard (15x15)</option>
+          <option value={20}>Expert (20x20)</option>
         </select>
       </div>
 
@@ -338,22 +338,6 @@ export default function Home() {
           <div className={styles.grid}>
             {grid?.map((row, rowIndex) => (
               <div key={rowIndex} className={styles.row}>
-                {/* <div className={styles.rowNumbers}>
-                  <div
-                    className={`${styles.numsWrapper} ${styles.rowNumsWrapper}`}
-                  >
-                    {rowNumbers[rowIndex]?.map((num, idx) => (
-                      <div
-                        key={idx}
-                        className={`${styles.number} ${
-                          styles[`number-${level}`]
-                        }`}
-                      >
-                        {num}
-                      </div>
-                    ))}
-                  </div>
-                </div> */}
                 {row.map((cell, colIndex) => {
                   const isBoldLeft = colIndex % 5 === 0 || colIndex === 0;
                   const isBoldTop = rowIndex % 5 === 0 || rowIndex === 0;

@@ -7,7 +7,32 @@
 }
 
 .levelSelector {
-  margin-bottom: 20px;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.levelSelector label {
+  margin-right: 1rem;
+  color: var(--dark-color);
+}
+
+.levelSelector select {
+  padding: 5px 10px;
+  font-size: 1rem;
+  border: 2px solid var(--light-gray);
+  border-radius: 5px;
+  outline: none;
+  cursor: pointer;
+  background-color: white;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+
+.levelSelector select:hover {
+  border-color: var(--dark-color);
+  background-color: var(--light-gray);
 }
 
 .gridWrapper {
@@ -397,6 +422,10 @@
     font-size: 0.7rem;
     height: 0.8rem;
   }
+
+  .levelSelector label {
+    font-size: 1rem;
+  }
 }
 
 @media (max-width: 400px) {
@@ -431,5 +460,9 @@
 
   .number-20 {
     font-size: 0.6rem;
+  }
+
+  .levelSelector {
+    margin-bottom: 0.5rem;
   }
 }
