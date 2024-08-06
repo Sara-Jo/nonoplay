@@ -6,43 +6,6 @@
   align-items: center;
 }
 
-.lives {
-  display: flex;
-  height: 5rem;
-  width: 8rem;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.life {
-  display: inline-block;
-  margin: 0 5px;
-  transition: transform 0.3s ease, color 0.3s ease;
-}
-
-.life.wiggle {
-  animation: wiggle 0.3s ease;
-  color: var(--light-gray);
-}
-
-@keyframes wiggle {
-  0% {
-    transform: rotate(0deg);
-  }
-  25% {
-    transform: rotate(25deg);
-  }
-  50% {
-    transform: rotate(0deg);
-  }
-  75% {
-    transform: rotate(-25deg);
-  }
-  100% {
-    transform: rotate(0deg);
-  }
-}
-
 .toggleButton {
   width: 6rem;
   height: 3rem;

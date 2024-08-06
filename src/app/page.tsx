@@ -4,13 +4,12 @@ import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import SquareRoundedIcon from "@mui/icons-material/SquareRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { CellState, GridState, Mode } from "@/types";
 import { generateRandomGrid } from "@/utils/generateRandomgrid";
 import { calculateNumbers } from "@/utils/calculateNumbers";
 import Grid from "@/components/Grid";
 import LevelSelector from "@/components/LevelSelector";
+import Lives from "@/components/Lives";
 
 const initialLives = 3;
 
@@ -253,21 +252,11 @@ export default function Home() {
     >
       <LevelSelector selectedLevel={level} onSelectLevel={setLevel} />
 
-      <div className={styles.lives}>
-        {Array.from({ length: initialLives }).map((_, index) => (
-          <div
-            key={index}
-            className={`${styles.life} ${index >= lives ? styles.wiggle : ""}`}
-            ref={addLifeRef}
-          >
-            {index < lives ? (
-              <FavoriteIcon fontSize="large" sx={{ color: "red" }} />
-            ) : (
-              <FavoriteBorderIcon fontSize="large" sx={{ color: "gray" }} />
-            )}
-          </div>
-        ))}
-      </div>
+      <Lives
+        initialLives={initialLives}
+        remainingLives={lives}
+        addLifeRef={addLifeRef}
+      />
 
       <Grid
         grid={grid}
