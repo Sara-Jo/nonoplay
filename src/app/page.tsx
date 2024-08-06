@@ -10,6 +10,7 @@ import { CellState, GridState, Mode } from "@/types";
 import { generateRandomGrid } from "@/utils/generateRandomgrid";
 import { calculateNumbers } from "@/utils/calculateNumbers";
 import Grid from "@/components/Grid";
+import LevelSelector from "@/components/LevelSelector";
 
 const initialLives = 3;
 
@@ -47,9 +48,11 @@ export default function Home() {
   useEffect(() => {
     const newGrid = generateRandomGrid(level);
     setAnswerGrid(newGrid);
+    setGrid(Array(level).fill(Array(level).fill(null)));
     const { rowNumbers, columnNumbers } = calculateNumbers(newGrid);
     setRowNumbers(rowNumbers);
     setColumnNumbers(columnNumbers);
+    setLives(3);
   }, [level]);
 
   const isRowCompleted = (
@@ -241,13 +244,6 @@ export default function Home() {
     setMode((prevMode) => (prevMode === "fill" ? "cross" : "fill"));
   };
 
-  const handleLevelChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newLevel = parseInt(event.target.value);
-    setLevel(newLevel);
-    setGrid(Array(newLevel).fill(Array(newLevel).fill(null)));
-    setLives(3);
-  };
-
   return (
     <div
       className={styles.main}
@@ -255,15 +251,7 @@ export default function Home() {
       onTouchEnd={handleTouchEnd}
       onTouchMove={handleTouchMove}
     >
-      <div className={styles.levelSelector}>
-        <label htmlFor="level">Select level: </label>
-        <select id="level" onChange={handleLevelChange} value={level}>
-          <option value={5}>Easy (5x5)</option>
-          <option value={10}>Medium (10x10)</option>
-          <option value={15}>Hard (15x15)</option>
-          <option value={20}>Expert (20x20)</option>
-        </select>
-      </div>
+      <LevelSelector selectedLevel={level} onSelectLevel={setLevel} />
 
       <div className={styles.lives}>
         {Array.from({ length: initialLives }).map((_, index) => (
