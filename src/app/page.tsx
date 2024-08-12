@@ -215,15 +215,26 @@ export default function Home() {
   const handleTouchMove = (event: React.TouchEvent<HTMLDivElement>) => {
     if (isDragging) {
       const touch = event.touches[0];
-      const element = document.elementFromPoint(touch.clientX, touch.clientY);
-      if (element) {
-        const cell = element.closest(`.${styles.cell}`);
-        if (cell) {
-          const row = cell.getAttribute("data-row");
-          const col = cell.getAttribute("data-col");
-          if (row && col) {
-            handleCellClick(parseInt(row), parseInt(col));
-          }
+      const gridElement = event.currentTarget.querySelector(`.${styles.grid}`);
+
+      if (gridElement) {
+        const rect = gridElement.getBoundingClientRect();
+        const touchX = touch.clientX - rect.left;
+        const touchY = touch.clientY - rect.top;
+
+        const cellWidth = rect.width / level;
+        const cellHeight = rect.height / level;
+
+        const colIndex = Math.floor(touchX / cellWidth);
+        const rowIndex = Math.floor(touchY / cellHeight);
+
+        if (
+          rowIndex >= 0 &&
+          rowIndex < level &&
+          colIndex >= 0 &&
+          colIndex < level
+        ) {
+          handleCellClick(rowIndex, colIndex);
         }
       }
     }
