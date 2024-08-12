@@ -207,6 +207,7 @@ export default function Home() {
     rowIndex: number,
     colIndex: number
   ) => {
+    console.log("touch start");
     event.preventDefault();
     setIsDragging(true);
     handleCellClick(rowIndex, colIndex);
@@ -215,32 +216,23 @@ export default function Home() {
   const handleTouchMove = (event: React.TouchEvent<HTMLDivElement>) => {
     if (isDragging) {
       const touch = event.touches[0];
-      const gridElement = event.currentTarget.querySelector(`.${styles.grid}`);
+      const element = document.elementFromPoint(touch.clientX, touch.clientY);
 
-      if (gridElement) {
-        const rect = gridElement.getBoundingClientRect();
-        const touchX = touch.clientX - rect.left;
-        const touchY = touch.clientY - rect.top;
-
-        const cellWidth = rect.width / level;
-        const cellHeight = rect.height / level;
-
-        const colIndex = Math.floor(touchX / cellWidth);
-        const rowIndex = Math.floor(touchY / cellHeight);
-
-        if (
-          rowIndex >= 0 &&
-          rowIndex < level &&
-          colIndex >= 0 &&
-          colIndex < level
-        ) {
-          handleCellClick(rowIndex, colIndex);
+      if (element) {
+        const cell = element.closest(`.cell`);
+        if (cell) {
+          const row = cell.getAttribute("data-row");
+          const col = cell.getAttribute("data-col");
+          if (row && col) {
+            handleCellClick(parseInt(row), parseInt(col));
+          }
         }
       }
     }
   };
 
   const handleTouchEnd = () => {
+    console.log("touch end");
     setIsDragging(false);
   };
 

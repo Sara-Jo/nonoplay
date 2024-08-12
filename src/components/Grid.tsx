@@ -104,7 +104,7 @@ const Grid: React.FC<GridProps> = ({
                     key={colIndex}
                     data-row={rowIndex}
                     data-col={colIndex}
-                    className={`row-${rowIndex} col-${colIndex} ${
+                    className={`cell row-${rowIndex} col-${colIndex} ${
                       styles[`cell-${level}`]
                     } ${styles.cell} ${
                       cell === "filled"
