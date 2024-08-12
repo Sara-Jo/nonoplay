@@ -54,6 +54,13 @@ export default function Home() {
     setLives(3);
   }, [level]);
 
+  const onSelectLevel = (level: number) => {
+    setCompletedRows([]);
+    setCompletedColumns([]);
+    setLives(3);
+    setLevel(level);
+  };
+
   const isRowCompleted = (
     grid: GridState,
     rowIndex: number,
@@ -253,7 +260,7 @@ export default function Home() {
       onTouchEnd={handleTouchEnd}
       onTouchMove={handleTouchMove}
     >
-      <LevelSelector selectedLevel={level} onSelectLevel={setLevel} />
+      <LevelSelector selectedLevel={level} onSelectLevel={onSelectLevel} />
 
       <Lives
         initialLives={initialLives}
