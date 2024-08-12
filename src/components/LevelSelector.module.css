@@ -24,3 +24,14 @@
   font-weight: bold;
   margin-bottom: 0.3rem;
 }
+
+@media (max-width: 400px) {
+  .levelSelector {
+    margin-bottom: 0.5rem;
+  }
+
+  .levelButton {
+    width: 4rem;
+    padding: 0.5rem 0.5rem;
+  }
+}

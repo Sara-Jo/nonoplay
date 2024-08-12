@@ -37,3 +37,9 @@
 .toggleSwitch.fill {
   transform: translateX(3rem);
 }
+
+@media (max-width: 400px) {
+  .toggleButton {
+    margin-top: 2rem;
+  }
+}

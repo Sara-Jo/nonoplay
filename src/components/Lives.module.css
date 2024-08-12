@@ -34,3 +34,9 @@
     transform: rotate(0deg);
   }
 }
+
+@media (max-width: 400px) {
+  .lives {
+    height: 4rem;
+  }
+}

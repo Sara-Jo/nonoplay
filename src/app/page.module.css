@@ -1,8 +1,8 @@
 .main {
+  height: 100vh;
   padding: 2rem;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
 }
 
@@ -44,4 +44,10 @@
 
 .toggleSwitch.fill {
   transform: translateX(3rem);
+}
+
+@media (max-width: 400px) {
+  .main {
+    padding: 1rem;
+  }
 }
