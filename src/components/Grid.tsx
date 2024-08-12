@@ -18,7 +18,6 @@ interface GridProps {
     colIndex: number
   ) => void;
   handleTouchMove: (event: React.TouchEvent<HTMLDivElement>) => void;
-  handleTouchEnd: () => void;
 }
 
 const Grid: React.FC<GridProps> = ({
@@ -34,7 +33,6 @@ const Grid: React.FC<GridProps> = ({
   handleMouseEnter,
   handleTouchStart,
   handleTouchMove,
-  handleTouchEnd,
 }) => {
   return (
     <div className={styles.gridContainer}>
@@ -124,6 +122,7 @@ const Grid: React.FC<GridProps> = ({
                     onTouchStart={(e) =>
                       handleTouchStart(e, rowIndex, colIndex)
                     }
+                    onTouchMove={handleTouchMove}
                   ></div>
                 );
               })}

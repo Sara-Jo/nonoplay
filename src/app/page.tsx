@@ -271,7 +271,6 @@ export default function Home() {
         handleMouseEnter={handleMouseEnter}
         handleTouchStart={handleTouchStart}
         handleTouchMove={handleTouchMove}
-        handleTouchEnd={handleTouchEnd}
       />
 
       <ToggleMode mode={mode} onToggle={toggleMode} />
