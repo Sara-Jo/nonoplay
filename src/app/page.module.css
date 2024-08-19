@@ -46,6 +46,19 @@
   transform: translateX(3rem);
 }
 
+@keyframes flash {
+  0% {
+    background-color: var(--light-color);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.flash {
+  animation: flash 0.5s linear;
+}
+
 @media (max-width: 400px) {
   .main {
     padding: 1rem;
