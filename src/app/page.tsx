@@ -54,11 +54,12 @@ export default function Home() {
     setLives(3);
   }, [level]);
 
-  const onSelectLevel = (level: number) => {
+  const onSelectLevel = (selectedlevel: number) => {
+    if (selectedlevel === level) return;
     setCompletedRows([]);
     setCompletedColumns([]);
     setLives(3);
-    setLevel(level);
+    setLevel(selectedlevel);
   };
 
   const isRowCompleted = (
