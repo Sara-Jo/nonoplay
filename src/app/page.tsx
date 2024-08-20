@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styles from "./page.module.css";
 import { CellState, GridState, Mode } from "@/types";
 import { generateRandomGrid } from "@/utils/generateRandomgrid";
@@ -12,6 +12,9 @@ import ToggleMode from "@/components/ToggleMode";
 import GameEndModal from "@/components/GameEndModal";
 
 const initialLives = 3;
+
+const initializeGrid = (size: number): GridState =>
+  Array(size).fill(Array(size).fill(null));
 
 const updateCell = (
   grid: GridState,
@@ -28,9 +31,7 @@ const updateCell = (
 export default function Home() {
   const [level, setLevel] = useState<number>(10);
   const [answerGrid, setAnswerGrid] = useState<GridState | null>(null);
-  const [grid, setGrid] = useState<GridState>(
-    Array(level).fill(Array(level).fill(null))
-  );
+  const [grid, setGrid] = useState<GridState>(initializeGrid(level));
   const [mode, setMode] = useState<Mode>("fill");
   const [rowNumbers, setRowNumbers] = useState<number[][]>([]);
   const [columnNumbers, setColumnNumbers] = useState<number[][]>([]);
@@ -48,20 +49,43 @@ export default function Home() {
   );
 
   useEffect(() => {
+    if (completedRows.length === level && completedColumns.length === level) {
+      setGameStatus("won");
+    }
+  }, [completedRows.length, completedColumns.length, level]);
+
+  const initializeGame = useCallback((level: number) => {
     const newGrid = generateRandomGrid(level);
     setAnswerGrid(newGrid);
-    let initialGrid = Array(level).fill(Array(level).fill(null));
+
     const { rowNumbers, columnNumbers } = calculateNumbers(newGrid);
     setRowNumbers(rowNumbers);
     setColumnNumbers(columnNumbers);
+
+    const { initialGrid, completedRows, completedColumns } =
+      getInitialGridState(level, rowNumbers, columnNumbers);
+
+    setGrid(initialGrid);
+    setCompletedRows(completedRows);
+    setCompletedColumns(completedColumns);
     setLives(initialLives);
     setGameStatus("playing");
+  }, []);
 
+  useEffect(() => {
+    initializeGame(level);
+  }, [level, initializeGame]);
+
+  const getInitialGridState = (
+    level: number,
+    rowNumbers: number[][],
+    columnNumbers: number[][]
+  ) => {
     const completedRows: number[] = [];
     const completedColumns: number[] = [];
+    let grid = initializeGrid(level);
 
-    // Fill rows with 0 in rowNumbers with crossed cells
-    initialGrid = initialGrid.map((row, rowIndex) => {
+    grid = grid.map((row, rowIndex) => {
       if (rowNumbers[rowIndex].length === 1 && rowNumbers[rowIndex][0] === 0) {
         completedRows.push(rowIndex);
         return Array(level).fill("crossed");
@@ -69,9 +93,8 @@ export default function Home() {
       return row;
     });
 
-    // Fill columns with 0 in columnNumbers with crossed cells
-    initialGrid = initialGrid.map((row, rowIndex) =>
-      row.map((cell: CellState, colIndex: number) => {
+    grid = grid.map((row, rowIndex) =>
+      row.map((cell, colIndex) => {
         if (
           columnNumbers[colIndex].length === 1 &&
           columnNumbers[colIndex][0] === 0
@@ -85,20 +108,13 @@ export default function Home() {
       })
     );
 
-    setGrid(initialGrid);
-    setCompletedRows(completedRows);
-    setCompletedColumns(completedColumns);
-  }, [level]);
+    return { initialGrid: grid, completedRows, completedColumns };
+  };
 
-  useEffect(() => {
-    if (completedRows.length === level && completedColumns.length === level) {
-      setGameStatus("won");
+  const onSelectLevel = (selectedLevel: number) => {
+    if (selectedLevel !== level) {
+      setLevel(selectedLevel);
     }
-  }, [completedRows.length, completedColumns.length, level]);
-
-  const onSelectLevel = (selectedlevel: number) => {
-    if (selectedlevel === level) return;
-    setLevel(selectedlevel);
   };
 
   const isRowCompleted = (
@@ -179,63 +195,58 @@ export default function Home() {
   };
 
   const handleCellClick = (rowIndex: number, colIndex: number) => {
-    if (answerGrid && grid[rowIndex][colIndex] === null) {
-      const isCorrect =
-        mode === "fill"
-          ? answerGrid[rowIndex][colIndex] === "filled"
-          : answerGrid[rowIndex][colIndex] === "crossed";
+    if (!answerGrid || grid[rowIndex][colIndex] !== null) return;
 
-      if (!isCorrect) {
-        setLives((prevLives) => {
-          const updatedLives = Math.max(prevLives - 1, 0);
+    const isCorrect =
+      mode === "fill"
+        ? answerGrid[rowIndex][colIndex] === "filled"
+        : answerGrid[rowIndex][colIndex] === "crossed";
 
-          if (lifeRefs[prevLives - 1]) {
-            lifeRefs[prevLives - 1].classList.add(styles.wiggle);
-          }
-
-          setErrorCell({ row: rowIndex, col: colIndex });
-
-          setTimeout(() => {
-            setErrorCell(null);
-            setGrid((prevGrid) =>
-              updateCell(
-                prevGrid,
-                rowIndex,
-                colIndex,
-                answerGrid[rowIndex][colIndex]
-              )
-            );
-          }, 500);
-
-          if (updatedLives === 0) {
-            setGameStatus("lost");
-          }
-
-          return updatedLives;
-        });
-
-        setIsDragging(false);
-      } else {
-        const newGrid = updateCell(
-          grid,
-          rowIndex,
-          colIndex,
-          answerGrid[rowIndex][colIndex]
-        );
-
-        const rowCompleted = isRowCompleted(newGrid, rowIndex, answerGrid);
-        const columnCompleted = isColumnCompleted(
-          newGrid,
-          colIndex,
-          answerGrid
-        );
-
-        setGrid(newGrid);
-
-        if (rowCompleted) fillRemainingCells(newGrid, rowIndex, true);
-        if (columnCompleted) fillRemainingCells(newGrid, colIndex, false);
-      }
+    if (!isCorrect) {
+      handleIncorrectSelection(rowIndex, colIndex);
+    } else {
+      handleCorrectSelection(rowIndex, colIndex);
     }
+  };
+
+  const handleIncorrectSelection = (rowIndex: number, colIndex: number) => {
+    const value = answerGrid?.[rowIndex]?.[colIndex] ?? "filled";
+
+    setLives((prevLives) => {
+      const updatedLives = Math.max(prevLives - 1, 0);
+
+      if (lifeRefs[prevLives - 1]) {
+        lifeRefs[prevLives - 1].classList.add(styles.wiggle);
+      }
+
+      setErrorCell({ row: rowIndex, col: colIndex });
+
+      setTimeout(() => {
+        setErrorCell(null);
+        setGrid((prevGrid) => updateCell(prevGrid, rowIndex, colIndex, value));
+      }, 500);
+
+      if (updatedLives === 0) {
+        setGameStatus("lost");
+      }
+
+      return updatedLives;
+    });
+
+    setIsDragging(false);
+  };
+
+  const handleCorrectSelection = (rowIndex: number, colIndex: number) => {
+    const value = answerGrid?.[rowIndex]?.[colIndex] ?? "filled";
+    const newGrid = updateCell(grid, rowIndex, colIndex, value);
+
+    setGrid(newGrid);
+
+    const rowCompleted = isRowCompleted(newGrid, rowIndex, answerGrid);
+    const columnCompleted = isColumnCompleted(newGrid, colIndex, answerGrid);
+
+    if (rowCompleted) fillRemainingCells(newGrid, rowIndex, true);
+    if (columnCompleted) fillRemainingCells(newGrid, colIndex, false);
   };
 
   const handleMouseDown = (rowIndex: number, colIndex: number) => {
@@ -258,7 +269,6 @@ export default function Home() {
     rowIndex: number,
     colIndex: number
   ) => {
-    console.log("touch start");
     event.preventDefault();
     setIsDragging(true);
     handleCellClick(rowIndex, colIndex);
@@ -283,7 +293,6 @@ export default function Home() {
   };
 
   const handleTouchEnd = () => {
-    console.log("touch end");
     setIsDragging(false);
   };
 
@@ -295,6 +304,10 @@ export default function Home() {
 
   const toggleMode = () => {
     setMode((prevMode) => (prevMode === "fill" ? "cross" : "fill"));
+  };
+
+  const handleNewGame = () => {
+    initializeGame(level);
   };
 
   return (
@@ -332,7 +345,7 @@ export default function Home() {
       {gameStatus !== "playing" && (
         <GameEndModal
           status={gameStatus}
-          onNewGame={() => {}}
+          onNewGame={handleNewGame}
           onGoToMain={() => {}}
         />
       )}
