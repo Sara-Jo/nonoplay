@@ -12,7 +12,8 @@
 }
 
 .modalContent {
-  background: white;
+  background: var(--background-color);
+  color: var(--dark-color);
   padding: 20px;
   border-radius: 8px;
   text-align: center;
@@ -28,27 +29,33 @@
 
 .buttonContainer {
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
   gap: 10px;
 }
 
 .button {
-  background-color: #007bff;
-  color: white;
+  width: 70%;
   border: none;
   padding: 10px 20px;
-  border-radius: 5px;
+  border-radius: 20px;
   cursor: pointer;
   font-size: 16px;
   transition: background-color 0.3s ease;
 }
 
-.button:hover {
-  background-color: #0056b3;
+.darkBackground {
+  background-color: var(--dark-color);
+  color: white;
 }
 
 .animation {
   margin-bottom: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 10rem;
 }
 
 .firecracker {

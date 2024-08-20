@@ -16,33 +16,39 @@ const GameEndModal: React.FC<GameEndModalProps> = ({
       <div className={styles.modalContent}>
         {status === "won" ? (
           <>
+            <h2 className={styles.title}>Game Complete!</h2>
             <div className={styles.animation}>
               {/* Firecracker Animation */}
               <div className={styles.firecracker}></div>
               <div className={styles.firecracker}></div>
               <div className={styles.firecracker}></div>
             </div>
-            <h2 className={styles.title}>Game Complete!</h2>
             <div className={styles.buttonContainer}>
-              <button className={styles.button} onClick={onNewGame}>
+              <div
+                className={`${styles.button} ${styles.darkBackground}`}
+                onClick={onNewGame}
+              >
                 New Game
-              </button>
-              <button className={styles.button} onClick={onGoToMain}>
+              </div>
+              <div className={styles.button} onClick={onGoToMain}>
                 Main
-              </button>
+              </div>
             </div>
           </>
         ) : (
           <>
+            <h2 className={styles.title}>Game Over!</h2>
             <div className={styles.animation}>
               {/* Sad Emoji Animation */}
               <div className={styles.sadEmoji}>😢</div>
             </div>
-            <h2 className={styles.title}>Game Over</h2>
             <div className={styles.buttonContainer}>
-              <button className={styles.button} onClick={onNewGame}>
+              <div
+                className={`${styles.button} ${styles.darkBackground}`}
+                onClick={onNewGame}
+              >
                 Restart
-              </button>
+              </div>
             </div>
           </>
         )}
