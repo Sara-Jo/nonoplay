@@ -50,12 +50,35 @@ export default function Home() {
   useEffect(() => {
     const newGrid = generateRandomGrid(level);
     setAnswerGrid(newGrid);
-    setGrid(Array(level).fill(Array(level).fill(null)));
+    let initialGrid = Array(level).fill(Array(level).fill(null));
     const { rowNumbers, columnNumbers } = calculateNumbers(newGrid);
     setRowNumbers(rowNumbers);
     setColumnNumbers(columnNumbers);
     setLives(initialLives);
     setGameStatus("playing");
+
+    // Fill rows with 0 in rowNumbers with crossed cells
+    initialGrid = initialGrid.map((row, rowIndex) => {
+      if (rowNumbers[rowIndex].length === 1 && rowNumbers[rowIndex][0] === 0) {
+        return Array(level).fill("crossed");
+      }
+      return row;
+    });
+
+    // Fill columns with 0 in columnNumbers with crossed cells
+    initialGrid = initialGrid.map((row, rowIndex) =>
+      row.map((cell: CellState, colIndex: number) => {
+        if (
+          columnNumbers[colIndex].length === 1 &&
+          columnNumbers[colIndex][0] === 0
+        ) {
+          return "crossed";
+        }
+        return cell;
+      })
+    );
+
+    setGrid(initialGrid);
   }, [level]);
 
   useEffect(() => {
