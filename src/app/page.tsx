@@ -57,9 +57,13 @@ export default function Home() {
     setLives(initialLives);
     setGameStatus("playing");
 
+    const completedRows: number[] = [];
+    const completedColumns: number[] = [];
+
     // Fill rows with 0 in rowNumbers with crossed cells
     initialGrid = initialGrid.map((row, rowIndex) => {
       if (rowNumbers[rowIndex].length === 1 && rowNumbers[rowIndex][0] === 0) {
+        completedRows.push(rowIndex);
         return Array(level).fill("crossed");
       }
       return row;
@@ -72,6 +76,9 @@ export default function Home() {
           columnNumbers[colIndex].length === 1 &&
           columnNumbers[colIndex][0] === 0
         ) {
+          if (!completedColumns.includes(colIndex)) {
+            completedColumns.push(colIndex);
+          }
           return "crossed";
         }
         return cell;
@@ -79,6 +86,8 @@ export default function Home() {
     );
 
     setGrid(initialGrid);
+    setCompletedRows(completedRows);
+    setCompletedColumns(completedColumns);
   }, [level]);
 
   useEffect(() => {
@@ -89,9 +98,6 @@ export default function Home() {
 
   const onSelectLevel = (selectedlevel: number) => {
     if (selectedlevel === level) return;
-    setCompletedRows([]);
-    setCompletedColumns([]);
-    setLives(initialLives);
     setLevel(selectedlevel);
   };
 
