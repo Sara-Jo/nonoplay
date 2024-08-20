@@ -9,6 +9,7 @@ import Grid from "@/components/Grid";
 import LevelSelector from "@/components/LevelSelector";
 import Lives from "@/components/Lives";
 import ToggleMode from "@/components/ToggleMode";
+import GameEndModal from "@/components/GameEndModal";
 
 const initialLives = 3;
 
@@ -56,6 +57,12 @@ export default function Home() {
     setLives(initialLives);
     setGameStatus("playing");
   }, [level]);
+
+  useEffect(() => {
+    if (completedRows.length === level && completedColumns.length === level) {
+      setGameStatus("won");
+    }
+  }, [completedRows.length, completedColumns.length, level]);
 
   const onSelectLevel = (selectedlevel: number) => {
     if (selectedlevel === level) return;
@@ -137,13 +144,6 @@ export default function Home() {
           setCompletedRows((prevRows) => [...prevRows, index]);
         } else {
           setCompletedColumns((prevColumns) => [...prevColumns, index]);
-        }
-
-        if (
-          completedRows.length === level &&
-          completedColumns.length === level
-        ) {
-          setGameStatus("won");
         }
       }
     }, 50);
@@ -299,6 +299,14 @@ export default function Home() {
       />
 
       <ToggleMode mode={mode} onToggle={toggleMode} />
+
+      {gameStatus !== "playing" && (
+        <GameEndModal
+          status={gameStatus}
+          onNewGame={() => {}}
+          onGoToMain={() => {}}
+        />
+      )}
     </div>
   );
 }
