@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import styles from "./page.module.css";
-
 import { CellState, GridState, Mode } from "@/types";
 import { generateRandomGrid } from "@/utils/generateRandomgrid";
 import { calculateNumbers } from "@/utils/calculateNumbers";
@@ -43,6 +42,9 @@ export default function Home() {
   } | null>(null);
   const [completedRows, setCompletedRows] = useState<number[]>([]);
   const [completedColumns, setCompletedColumns] = useState<number[]>([]);
+  const [gameStatus, setGameStatus] = useState<"won" | "lost" | "playing">(
+    "playing"
+  );
 
   useEffect(() => {
     const newGrid = generateRandomGrid(level);
@@ -51,14 +53,15 @@ export default function Home() {
     const { rowNumbers, columnNumbers } = calculateNumbers(newGrid);
     setRowNumbers(rowNumbers);
     setColumnNumbers(columnNumbers);
-    setLives(3);
+    setLives(initialLives);
+    setGameStatus("playing");
   }, [level]);
 
   const onSelectLevel = (selectedlevel: number) => {
     if (selectedlevel === level) return;
     setCompletedRows([]);
     setCompletedColumns([]);
-    setLives(3);
+    setLives(initialLives);
     setLevel(selectedlevel);
   };
 
@@ -135,6 +138,13 @@ export default function Home() {
         } else {
           setCompletedColumns((prevColumns) => [...prevColumns, index]);
         }
+
+        if (
+          completedRows.length === level &&
+          completedColumns.length === level
+        ) {
+          setGameStatus("won");
+        }
       }
     }, 50);
   };
@@ -167,6 +177,10 @@ export default function Home() {
               )
             );
           }, 500);
+
+          if (updatedLives === 0) {
+            setGameStatus("lost");
+          }
 
           return updatedLives;
         });
