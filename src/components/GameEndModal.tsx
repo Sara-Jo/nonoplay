@@ -1,3 +1,4 @@
+import Confetti from "./Confetti";
 import styles from "./GameEndModal.module.css";
 
 interface GameEndModalProps {
@@ -13,15 +14,14 @@ const GameEndModal: React.FC<GameEndModalProps> = ({
 }) => {
   return (
     <div className={styles.modalOverlay}>
+      {status === "won" && <Confetti />}
+
       <div className={styles.modalContent}>
         {status === "won" ? (
           <>
             <h2 className={styles.title}>Game Complete!</h2>
             <div className={styles.animation}>
-              {/* Firecracker Animation */}
-              <div className={styles.firecracker}></div>
-              <div className={styles.firecracker}></div>
-              <div className={styles.firecracker}></div>
+              <div className={styles.emoji}>🎉</div>
             </div>
             <div className={styles.buttonContainer}>
               <div
@@ -40,7 +40,7 @@ const GameEndModal: React.FC<GameEndModalProps> = ({
             <h2 className={styles.title}>Game Over!</h2>
             <div className={styles.animation}>
               {/* Sad Emoji Animation */}
-              <div className={styles.sadEmoji}>😢</div>
+              <div className={styles.emoji}>😢</div>
             </div>
             <div className={styles.buttonContainer}>
               <div

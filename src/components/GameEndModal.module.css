@@ -4,6 +4,8 @@
   left: 0;
   right: 0;
   bottom: 0;
+  width: 100%;
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
@@ -12,13 +14,13 @@
 }
 
 .modalContent {
-  background: var(--background-color);
+  background: white;
   color: var(--dark-color);
   padding: 20px;
   border-radius: 8px;
   text-align: center;
   max-width: 400px;
-  width: 100%;
+  width: 80%;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
 }
 
@@ -58,50 +60,7 @@
   height: 10rem;
 }
 
-.firecracker {
-  width: 10px;
-  height: 50px;
-  background-color: red;
-  border-radius: 2px;
-  margin: 5px;
-  position: relative;
-  animation: explode 1s infinite;
-}
-
-.firecracker::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 2px;
-  height: 100%;
-  background-color: yellow;
-  transform: translateX(-50%);
-  animation: flicker 0.1s infinite;
-}
-
-@keyframes explode {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1.5);
-    opacity: 0;
-  }
-}
-
-@keyframes flicker {
-  0%,
-  100% {
-    opacity: 0.2;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-.sadEmoji {
+.emoji {
   font-size: 60px;
   animation: bounce 1s infinite;
 }
