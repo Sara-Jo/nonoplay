@@ -39,7 +39,6 @@ const GameEndModal: React.FC<GameEndModalProps> = ({
           <>
             <h2 className={styles.title}>Game Over!</h2>
             <div className={styles.animation}>
-              {/* Sad Emoji Animation */}
               <div className={styles.emoji}>😢</div>
             </div>
             <div className={styles.buttonContainer}>

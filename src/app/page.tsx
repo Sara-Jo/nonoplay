@@ -349,12 +349,6 @@ export default function Home() {
           onGoToMain={() => {}}
         />
       )}
-
-      <GameEndModal
-        status="won"
-        onNewGame={handleNewGame}
-        onGoToMain={() => {}}
-      />
     </div>
   );
 }
