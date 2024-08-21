@@ -187,9 +187,13 @@ export default function Home() {
       } else {
         clearInterval(interval);
         if (isRow) {
-          setCompletedRows((prevRows) => [...prevRows, index]);
+          setCompletedRows((prevRows) =>
+            prevRows.includes(index) ? prevRows : [...prevRows, index]
+          );
         } else {
-          setCompletedColumns((prevColumns) => [...prevColumns, index]);
+          setCompletedColumns((prevColumns) =>
+            prevColumns.includes(index) ? prevColumns : [...prevColumns, index]
+          );
         }
       }
     }, 50);
