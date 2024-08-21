@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import styles from "./page.module.css";
 import { CellState, GridState, Mode } from "@/types";
 import { generateRandomGrid } from "@/utils/generateRandomgrid";
@@ -47,6 +47,7 @@ export default function Home() {
   const [gameStatus, setGameStatus] = useState<"won" | "lost" | "playing">(
     "playing"
   );
+  const touchDeviceRef = useRef<boolean>(false);
 
   useEffect(() => {
     if (completedRows.length === level && completedColumns.length === level) {
@@ -250,15 +251,18 @@ export default function Home() {
   };
 
   const handleMouseDown = (rowIndex: number, colIndex: number) => {
+    if (touchDeviceRef.current) return; // Don't handle mouse events on touch devices
     setIsDragging(true);
     handleCellClick(rowIndex, colIndex);
   };
 
   const handleMouseUp = () => {
+    if (touchDeviceRef.current) return;
     setIsDragging(false);
   };
 
   const handleMouseEnter = (rowIndex: number, colIndex: number) => {
+    if (touchDeviceRef.current) return;
     if (isDragging) {
       handleCellClick(rowIndex, colIndex);
     }
@@ -269,12 +273,13 @@ export default function Home() {
     rowIndex: number,
     colIndex: number
   ) => {
-    event.preventDefault();
+    touchDeviceRef.current = true; // Mark the device as a touch device
     setIsDragging(true);
     handleCellClick(rowIndex, colIndex);
   };
 
   const handleTouchMove = (event: React.TouchEvent<HTMLDivElement>) => {
+    if (!touchDeviceRef.current) return;
     if (isDragging) {
       const touch = event.touches[0];
       const element = document.elementFromPoint(touch.clientX, touch.clientY);
