@@ -326,7 +326,7 @@ export default function Play() {
       onTouchEnd={handleTouchEnd}
       onTouchMove={handleTouchMove}
     >
-      <LevelSelector selectedLevel={level} onSelectLevel={onSelectLevel} />
+      {/* <LevelSelector selectedLevel={level} onSelectLevel={onSelectLevel} /> */}
 
       <Lives
         initialLives={initialLives}

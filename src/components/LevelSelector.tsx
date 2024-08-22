@@ -2,7 +2,7 @@ import styles from "./LevelSelector.module.css";
 
 interface LevelSelectorProps {
   selectedLevel: number;
-  onSelectLevel: (level: number) => void;
+  // onSelectLevel: (level: number) => void;
 }
 
 const levels: { label: string; value: number }[] = [
@@ -14,7 +14,7 @@ const levels: { label: string; value: number }[] = [
 
 const LevelSelector: React.FC<LevelSelectorProps> = ({
   selectedLevel,
-  onSelectLevel,
+  // onSelectLevel,
 }) => {
   return (
     <div className={styles.levelSelector}>
@@ -24,7 +24,7 @@ const LevelSelector: React.FC<LevelSelectorProps> = ({
           className={`${styles.levelButton} ${
             selectedLevel === value ? styles.selected : ""
           }`}
-          onClick={() => onSelectLevel(value)}
+          // onClick={() => onSelectLevel(value)}
         >
           <p className={styles.label}>{label}</p>
           <p className={styles.value}>{`${value} x ${value}`}</p>

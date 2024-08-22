@@ -1,15 +1,50 @@
 .main {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: end;
   align-items: center;
   height: 100vh;
+  position: relative;
+}
+
+.shinyContainer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+  height: 100px;
+  z-index: 1;
 }
 
 .logoContainer {
   width: 100%;
+  position: absolute;
+  top: 0;
+  display: flex;
+  justify-content: center;
 }
 
 .logo {
   height: auto;
   width: 100%;
+  max-width: 50rem;
+}
+
+.startButton {
+  width: 15rem;
+  height: 4rem;
+  margin-bottom: 10rem;
+  border-radius: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 10px solid var(--light-color);
+  color: var(--light-color);
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  box-shadow: 0 0 10px var(--light-gray);
+  z-index: 1000;
 }
