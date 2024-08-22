@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import styles from "./Glitter.module.css";
 
 const Glitter = () => {
-  const glitterCount = 300;
+  const glitterCount = 200;
   const glitterColors = ["#FFFF99", "#FFFF66", "#FFCC00", "#FF9966", "#FF6666"];
 
   const generateGlitter = () => {

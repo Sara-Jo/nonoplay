@@ -18,7 +18,6 @@
 }
 
 .logoContainer {
-  width: 100%;
   position: absolute;
   top: 0;
   display: flex;
@@ -27,8 +26,7 @@
 
 .logo {
   height: auto;
-  width: 100%;
-  max-width: 50rem;
+  max-width: 80rem;
 }
 
 .startButton {
@@ -40,11 +38,30 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  border: 10px solid var(--light-color);
-  color: var(--light-color);
+  border: 10px solid var(--logo-color);
+  background-color: var(--background-color);
+  color: var(--logo-color);
   font-size: 1.2rem;
   font-weight: bold;
   text-transform: uppercase;
   box-shadow: 0 0 10px var(--light-gray);
   z-index: 1000;
+}
+
+@media (max-width: 800px) {
+  .logo {
+    max-width: 70rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .logo {
+    max-width: 35rem;
+  }
+
+  .startButton {
+    width: 10rem;
+    height: 3rem;
+    font-size: 1rem;
+  }
 }
