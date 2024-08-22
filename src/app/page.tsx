@@ -14,13 +14,25 @@ export default function Home() {
         <Image
           src="/logo.png"
           alt="image"
-          // layout="responsive"
           width={800}
           height={800}
           className={styles.logo}
         />
       </div>
-      <div className={styles.startButton}>Game Start</div>
+      <motion.div
+        className={styles.startButton}
+        animate={{
+          scale: [1, 1.1, 1],
+        }}
+        transition={{
+          duration: 1,
+          ease: "easeInOut",
+          repeat: Infinity,
+          repeatType: "reverse",
+        }}
+      >
+        Game Start
+      </motion.div>
       {/* <LevelSelector selectedLevel={10} /> */}
     </div>
   );
