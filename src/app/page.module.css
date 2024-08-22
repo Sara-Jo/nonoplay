@@ -1,66 +1,15 @@
 .main {
-  height: 100vh;
-  padding: 2rem;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.toggleButton {
-  width: 6rem;
-  height: 3rem;
-  margin-top: 3rem;
-  border-radius: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: relative;
-  cursor: pointer;
-  background-color: var(--shade-color);
-}
-
-.toggleIcon {
-  padding: 0.7rem;
-  display: flex;
-  align-items: center;
-}
-
-.toggleSwitch {
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50%;
-  background-color: white;
-  position: absolute;
-  transition: transform 0.3s;
-  display: flex;
-  align-items: center;
   justify-content: center;
-  box-shadow: 0 0 10px var(--light-gray);
+  align-items: center;
+  height: 100vh;
 }
 
-.toggleSwitch.cross {
-  transform: translateX(0);
+.logoContainer {
+  width: 100%;
 }
 
-.toggleSwitch.fill {
-  transform: translateX(3rem);
-}
-
-@keyframes flash {
-  0% {
-    background-color: var(--light-color);
-  }
-  100% {
-    background-color: transparent;
-  }
-}
-
-.flash {
-  animation: flash 0.5s linear;
-}
-
-@media (max-width: 400px) {
-  .main {
-    padding: 1rem;
-  }
+.logo {
+  height: auto;
+  width: 100%;
 }
