@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import styles from "./Glitter.module.css";
 
@@ -6,7 +6,15 @@ const Glitter = () => {
   const glitterCount = 200;
   const glitterColors = ["#FFFF99", "#FFFF66", "#FFCC00", "#FF9966", "#FF6666"];
 
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true); // This ensures that the component is rendered on the client-side
+  }, []);
+
   const generateGlitter = () => {
+    if (!isClient) return null;
+
     return Array.from({ length: glitterCount }).map((_, index) => {
       const randomXStart = Math.random() * window.innerWidth;
       const randomYStart = Math.random() * window.innerHeight;

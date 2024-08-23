@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import styles from "./Confetti.module.css";
 
@@ -12,7 +12,15 @@ const Confetti = () => {
     "#33FF57",
   ];
 
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true); // This ensures that the component is rendered on the client-side
+  }, []);
+
   const generateConfetti = () => {
+    if (!isClient) return null;
+
     return Array.from({ length: confettiCount }).map((_, index) => {
       const randomXStart = Math.random() * window.innerWidth;
       const randomXEnd = Math.random() * window.innerWidth;

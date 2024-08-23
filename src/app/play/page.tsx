@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState, useRef, use } from "react";
+import { useCallback, useEffect, useState, useRef, use, Suspense } from "react";
 import styles from "./page.module.css";
 import { CellState, GridState, Mode } from "@/types";
 import { generateRandomGrid } from "@/utils/generateRandomgrid";
@@ -335,55 +335,57 @@ export default function Play() {
   };
 
   return (
-    <div
-      className={styles.main}
-      onMouseUp={handleMouseUp}
-      onTouchEnd={handleTouchEnd}
-      onTouchMove={handleTouchMove}
-    >
-      <div className={styles.header}>
-        <div className={styles.backButtonWrapper}>
-          <ArrowBackIosRoundedIcon
-            className={styles.backButton}
-            color="inherit"
-            onClick={goToMain}
+    <Suspense fallback={<div>Loading...</div>}>
+      <div
+        className={styles.main}
+        onMouseUp={handleMouseUp}
+        onTouchEnd={handleTouchEnd}
+        onTouchMove={handleTouchMove}
+      >
+        <div className={styles.header}>
+          <div className={styles.backButtonWrapper}>
+            <ArrowBackIosRoundedIcon
+              className={styles.backButton}
+              color="inherit"
+              onClick={goToMain}
+            />
+          </div>
+          <div className={styles.level}>{levelLabel}</div>
+          <></>
+        </div>
+        <Lives
+          initialLives={initialLives}
+          remainingLives={lives}
+          addLifeRef={addLifeRef}
+        />
+
+        <div className={styles.gridWrapper}>
+          <Grid
+            grid={grid}
+            level={level}
+            errorCell={errorCell}
+            completedRows={completedRows}
+            completedColumns={completedColumns}
+            columnNumbers={columnNumbers}
+            rowNumbers={rowNumbers}
+            isDragging={isDragging}
+            handleMouseDown={handleMouseDown}
+            handleMouseEnter={handleMouseEnter}
+            handleTouchStart={handleTouchStart}
+            handleTouchMove={handleTouchMove}
           />
         </div>
-        <div className={styles.level}>{levelLabel}</div>
-        <></>
+
+        <ToggleMode mode={mode} onToggle={toggleMode} />
+
+        {gameStatus !== "playing" && (
+          <GameEndModal
+            status={gameStatus}
+            onNewGame={handleNewGame}
+            onGoToMain={goToMain}
+          />
+        )}
       </div>
-      <Lives
-        initialLives={initialLives}
-        remainingLives={lives}
-        addLifeRef={addLifeRef}
-      />
-
-      <div className={styles.gridWrapper}>
-        <Grid
-          grid={grid}
-          level={level}
-          errorCell={errorCell}
-          completedRows={completedRows}
-          completedColumns={completedColumns}
-          columnNumbers={columnNumbers}
-          rowNumbers={rowNumbers}
-          isDragging={isDragging}
-          handleMouseDown={handleMouseDown}
-          handleMouseEnter={handleMouseEnter}
-          handleTouchStart={handleTouchStart}
-          handleTouchMove={handleTouchMove}
-        />
-      </div>
-
-      <ToggleMode mode={mode} onToggle={toggleMode} />
-
-      {gameStatus !== "playing" && (
-        <GameEndModal
-          status={gameStatus}
-          onNewGame={handleNewGame}
-          onGoToMain={goToMain}
-        />
-      )}
-    </div>
+    </Suspense>
   );
 }
