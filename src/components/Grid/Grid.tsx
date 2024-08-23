@@ -1,39 +1,304 @@
-import { GridState } from "@/types";
+import { CellState, GridState, Mode } from "@/types";
 import styles from "./Grid.module.css";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { initializeGrid } from "@/utils/initializeGrid";
+import { generateRandomGrid } from "@/utils/generateRandomgrid";
+import { calculateNumbers } from "@/utils/calculateNumbers";
+import { initialLives } from "@/utils/constants";
 
 interface GridProps {
-  grid: GridState;
   level: number;
-  errorCell: { row: number; col: number } | null;
-  completedRows: number[];
-  completedColumns: number[];
-  columnNumbers: number[][];
-  rowNumbers: number[][];
-  isDragging: boolean;
-  handleMouseDown: (rowIndex: number, colIndex: number) => void;
-  handleMouseEnter: (rowIndex: number, colIndex: number) => void;
-  handleTouchStart: (
-    event: React.TouchEvent<HTMLDivElement>,
-    rowIndex: number,
-    colIndex: number
-  ) => void;
-  handleTouchMove: (event: React.TouchEvent<HTMLDivElement>) => void;
+  mode: Mode;
+  lives: number;
+  setLives: (lives: number) => void;
+  lifeRefs: HTMLDivElement[];
+  setGameStatus: (status: "won" | "lost" | "playing") => void;
 }
 
+const updateCell = (
+  grid: GridState,
+  rowIndex: number,
+  colIndex: number,
+  value: CellState | null
+): GridState =>
+  grid.map((row, rIdx) =>
+    row.map((cell, cIdx) =>
+      rIdx === rowIndex && cIdx === colIndex ? value : cell
+    )
+  );
+
 const Grid: React.FC<GridProps> = ({
-  grid,
   level,
-  errorCell,
-  completedRows,
-  completedColumns,
-  columnNumbers,
-  rowNumbers,
-  isDragging,
-  handleMouseDown,
-  handleMouseEnter,
-  handleTouchStart,
-  handleTouchMove,
+  mode,
+  lives,
+  setLives,
+  lifeRefs,
+  setGameStatus,
 }) => {
+  const [answerGrid, setAnswerGrid] = useState<GridState | null>(null);
+  const [grid, setGrid] = useState<GridState>(initializeGrid(level));
+  const [rowNumbers, setRowNumbers] = useState<number[][]>([]);
+  const [columnNumbers, setColumnNumbers] = useState<number[][]>([]);
+  const [completedRows, setCompletedRows] = useState<number[]>([]);
+  const [completedColumns, setCompletedColumns] = useState<number[]>([]);
+  const [errorCell, setErrorCell] = useState<{
+    row: number;
+    col: number;
+  } | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const touchDeviceRef = useRef<boolean>(false);
+
+  // Initialize game logic, set up grid
+  useEffect(() => {
+    const newGrid = generateRandomGrid(level);
+    setAnswerGrid(newGrid);
+    const { rowNumbers, columnNumbers } = calculateNumbers(newGrid);
+    const { initialGrid, completedRows, completedColumns } =
+      getInitialGridState(level, rowNumbers, columnNumbers);
+    setGrid(initialGrid);
+    setCompletedRows(completedRows);
+    setCompletedColumns(completedColumns);
+    initializeGame(level);
+  }, [level]);
+
+  // Check if the game is won
+  useEffect(() => {
+    if (completedRows.length === level && completedColumns.length === level) {
+      setGameStatus("won");
+    }
+  }, [completedRows.length, completedColumns.length, level, setGameStatus]);
+
+  const getInitialGridState = (
+    level: number,
+    rowNumbers: number[][],
+    columnNumbers: number[][]
+  ) => {
+    const completedRows: number[] = [];
+    const completedColumns: number[] = [];
+    let grid = initializeGrid(level);
+
+    grid = grid.map((row, rowIndex) => {
+      if (rowNumbers[rowIndex].length === 1 && rowNumbers[rowIndex][0] === 0) {
+        completedRows.push(rowIndex);
+        return Array(level).fill("crossed");
+      }
+      return row;
+    });
+
+    grid = grid.map((row, rowIndex) =>
+      row.map((cell, colIndex) => {
+        if (
+          columnNumbers[colIndex].length === 1 &&
+          columnNumbers[colIndex][0] === 0
+        ) {
+          if (!completedColumns.includes(colIndex)) {
+            completedColumns.push(colIndex);
+          }
+          return "crossed";
+        }
+        return cell;
+      })
+    );
+
+    return { initialGrid: grid, completedRows, completedColumns };
+  };
+
+  const initializeGame = useCallback(
+    (level: number) => {
+      const newGrid = generateRandomGrid(level);
+      setAnswerGrid(newGrid);
+
+      const { rowNumbers, columnNumbers } = calculateNumbers(newGrid);
+      setRowNumbers(rowNumbers);
+      setColumnNumbers(columnNumbers);
+
+      const { initialGrid, completedRows, completedColumns } =
+        getInitialGridState(level, rowNumbers, columnNumbers);
+
+      setGrid(initialGrid);
+      setCompletedRows(completedRows);
+      setCompletedColumns(completedColumns);
+      setLives(initialLives);
+      setGameStatus("playing");
+    },
+    [setLives, setGameStatus]
+  );
+
+  const fillRemainingCells = (index: number, isRow: boolean) => {
+    let i = 0;
+    const interval = setInterval(() => {
+      if (i < grid.length) {
+        setGrid((prevGrid) => {
+          const newGrid = prevGrid.map((row, rowIndex) =>
+            row.map((cell, colIndex) => {
+              if (isRow && rowIndex === index && cell === null) {
+                return colIndex <= i ? "crossed" : cell;
+              }
+              if (!isRow && colIndex === index && cell === null) {
+                return rowIndex <= i ? "crossed" : cell;
+              }
+              return cell;
+            })
+          );
+
+          const cells = isRow
+            ? document.querySelectorAll(`.row-${index}`)
+            : document.querySelectorAll(`.col-${index}`);
+
+          cells.forEach((cell, cellIndex) => {
+            if (cellIndex <= i) {
+              cell.classList.add(styles.flash);
+              setTimeout(() => {
+                cell.classList.remove(styles.flash);
+              }, 500);
+            }
+          });
+
+          return newGrid;
+        });
+        i++;
+      } else {
+        clearInterval(interval);
+        if (isRow) {
+          setCompletedRows((prevRows) =>
+            prevRows.includes(index) ? prevRows : [...prevRows, index]
+          );
+        } else {
+          setCompletedColumns((prevColumns) =>
+            prevColumns.includes(index) ? prevColumns : [...prevColumns, index]
+          );
+        }
+      }
+    }, 50);
+  };
+
+  const isRowCompleted = (newGrid: GridState, rowIndex: number): boolean => {
+    if (!answerGrid) return false;
+
+    return newGrid[rowIndex].every(
+      (cell, colIndex) =>
+        answerGrid[rowIndex][colIndex] === "crossed" ||
+        (cell === "filled" && answerGrid[rowIndex][colIndex] === "filled")
+    );
+  };
+
+  const isColumnCompleted = (newGrid: GridState, colIndex: number): boolean => {
+    if (!answerGrid) return false;
+
+    return newGrid.every(
+      (row, rowIndex) =>
+        answerGrid[rowIndex][colIndex] === "crossed" ||
+        (row[colIndex] === "filled" &&
+          answerGrid[rowIndex][colIndex] === "filled")
+    );
+  };
+
+  const updateGridCell = (row: number, col: number, newState: CellState) => {
+    setGrid((prevGrid) => {
+      const updatedGrid = [...prevGrid];
+      updatedGrid[row][col] = newState;
+      return updatedGrid;
+    });
+  };
+
+  const handleCellClick = (rowIndex: number, colIndex: number) => {
+    if (!answerGrid || grid[rowIndex][colIndex] !== null) return;
+
+    const isCorrect =
+      mode === "fill"
+        ? answerGrid[rowIndex][colIndex] === "filled"
+        : answerGrid[rowIndex][colIndex] === "crossed";
+
+    if (!isCorrect) {
+      handleIncorrectSelection(rowIndex, colIndex);
+    } else {
+      handleCorrectSelection(rowIndex, colIndex);
+    }
+  };
+
+  const handleIncorrectSelection = (rowIndex: number, colIndex: number) => {
+    const value = answerGrid?.[rowIndex]?.[colIndex] ?? "filled";
+
+    setTimeout(() => {
+      const updatedLives = Math.max(lives - 1, 0);
+      setLives(updatedLives);
+
+      if (lifeRefs[updatedLives]) {
+        lifeRefs[updatedLives].classList.add(styles.wiggle);
+      }
+
+      setErrorCell({ row: rowIndex, col: colIndex });
+
+      setTimeout(() => {
+        setErrorCell(null);
+        setGrid((prevGrid) => updateCell(prevGrid, rowIndex, colIndex, value));
+      }, 500);
+
+      if (updatedLives === 0) {
+        setGameStatus("lost");
+      }
+      return updatedLives;
+    });
+
+    setIsDragging(false);
+  };
+
+  const handleCorrectSelection = (rowIndex: number, colIndex: number) => {
+    const value = answerGrid?.[rowIndex]?.[colIndex] ?? "filled";
+    const newGrid = updateCell(grid, rowIndex, colIndex, value);
+    setGrid(newGrid);
+
+    // Check for completed rows/columns here and tzrigger updates as necessary
+    if (isRowCompleted(newGrid, rowIndex)) fillRemainingCells(rowIndex, true);
+    if (isColumnCompleted(newGrid, colIndex))
+      fillRemainingCells(colIndex, false);
+  };
+
+  const handleMouseDown = (e: React.MouseEvent, row: number, col: number) => {
+    if (touchDeviceRef.current) return; // Don't handle mouse events on touch devices
+    setIsDragging(true);
+    handleCellClick(row, col);
+  };
+
+  const handleMouseEnter = (e: React.MouseEvent, row: number, col: number) => {
+    if (!isDragging) return;
+    handleCellClick(row, col);
+  };
+
+  const handleMouseUp = () => {
+    if (touchDeviceRef.current) return;
+    setIsDragging(false);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent, row: number, col: number) => {
+    touchDeviceRef.current = true;
+    setIsDragging(true);
+    handleCellClick(row, col);
+  };
+
+  const handleTouchMove = (event: React.TouchEvent<HTMLDivElement>) => {
+    if (!touchDeviceRef.current) return;
+    if (isDragging) {
+      const touch = event.touches[0];
+      const element = document.elementFromPoint(touch.clientX, touch.clientY);
+
+      if (element) {
+        const cell = element.closest(`.cell`);
+        if (cell) {
+          const row = cell.getAttribute("data-row");
+          const col = cell.getAttribute("data-col");
+          if (row && col) {
+            handleCellClick(parseInt(row), parseInt(col));
+          }
+        }
+      }
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
+  };
+
   return (
     <div className={styles.gridContainer}>
       <div className={styles.header}>
@@ -88,7 +353,11 @@ const Grid: React.FC<GridProps> = ({
             </div>
           ))}
         </div>
-        <div className={styles.grid}>
+        <div
+          className={`${styles.grid} ${errorCell ? styles.error : ""}`}
+          onMouseUp={handleMouseUp}
+          onTouchEnd={handleTouchEnd}
+        >
           {grid?.map((row, rowIndex) => (
             <div key={rowIndex} className={styles.row}>
               {row.map((cell, colIndex) => {
@@ -117,12 +386,14 @@ const Grid: React.FC<GridProps> = ({
                     } ${isBoldTop ? styles.boldTop : ""} ${
                       isBoldRight ? styles.boldRight : ""
                     } ${isBoldBottom ? styles.boldBottom : ""}`}
-                    onMouseDown={() => handleMouseDown(rowIndex, colIndex)}
-                    onMouseEnter={() => handleMouseEnter(rowIndex, colIndex)}
+                    onMouseDown={(e) => handleMouseDown(e, rowIndex, colIndex)}
+                    onMouseEnter={(e) =>
+                      handleMouseEnter(e, rowIndex, colIndex)
+                    }
                     onTouchStart={(e) =>
                       handleTouchStart(e, rowIndex, colIndex)
                     }
-                    onTouchMove={handleTouchMove}
+                    onTouchMove={(e) => handleTouchMove(e)}
                   ></div>
                 );
               })}
