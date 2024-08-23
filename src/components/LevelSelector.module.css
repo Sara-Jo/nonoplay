@@ -39,14 +39,7 @@
 }
 
 .cancelButton {
-  height: 3rem;
-  display: flex;
-  align-items: center;
   background-color: var(--light-gray);
-  border: none;
-  padding: 0.7rem 1rem;
-  cursor: pointer;
-  border-radius: 0.5rem;
-  width: 100%;
   font-weight: bold;
+  margin-bottom: 0;
 }
