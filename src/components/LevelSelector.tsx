@@ -1,35 +1,38 @@
 import styles from "./LevelSelector.module.css";
 
 interface LevelSelectorProps {
-  selectedLevel: number;
+  onClose: () => void;
   // onSelectLevel: (level: number) => void;
 }
 
-const levels: { label: string; value: number }[] = [
-  { label: "Easy", value: 5 },
-  { label: "Medium", value: 10 },
-  { label: "Hard", value: 15 },
-  { label: "Expert", value: 20 },
+const levels: { label: string; value: number; emoji: string }[] = [
+  { label: "Easy", value: 5, emoji: "🐣" },
+  { label: "Medium", value: 10, emoji: "🦊" },
+  { label: "Hard", value: 15, emoji: "🐯" },
+  { label: "Expert", value: 20, emoji: "🦁" },
 ];
 
 const LevelSelector: React.FC<LevelSelectorProps> = ({
-  selectedLevel,
+  onClose,
   // onSelectLevel,
 }) => {
   return (
     <div className={styles.levelSelector}>
-      {levels.map(({ label, value }) => (
-        <button
+      {levels.map(({ label, value, emoji }) => (
+        <div
           key={value}
-          className={`${styles.levelButton} ${
-            selectedLevel === value ? styles.selected : ""
-          }`}
+          className={styles.levelButton}
           // onClick={() => onSelectLevel(value)}
         >
-          <p className={styles.label}>{label}</p>
+          <p className={styles.label}>
+            {emoji} {label}
+          </p>
           <p className={styles.value}>{`${value} x ${value}`}</p>
-        </button>
+        </div>
       ))}
+      <div className={styles.cancelButton} onClick={onClose}>
+        Cancel
+      </div>
     </div>
   );
 };

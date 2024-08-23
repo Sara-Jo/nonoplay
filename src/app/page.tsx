@@ -5,8 +5,19 @@ import { motion } from "framer-motion";
 import styles from "./page.module.css";
 import LevelSelector from "@/components/LevelSelector";
 import Glitter from "@/components/Glitter";
+import { useState } from "react";
 
 export default function Home() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div className={styles.main}>
       <Glitter />
@@ -21,6 +32,7 @@ export default function Home() {
       </div>
       <motion.div
         className={styles.startButton}
+        onClick={handleOpenModal}
         animate={{
           scale: [1, 1.1, 1],
         }}
@@ -33,7 +45,16 @@ export default function Home() {
       >
         Game Start
       </motion.div>
-      {/* <LevelSelector selectedLevel={10} /> */}
+      {isModalOpen && (
+        <div className={styles.modalOverlay}>
+          <div
+            className={styles.modalContainer}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <LevelSelector onClose={handleCloseModal} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
