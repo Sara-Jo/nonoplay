@@ -1,9 +1,11 @@
+"use client";
+
 import { motion } from "framer-motion";
 import styles from "./LevelSelector.module.css";
+import { useRouter } from "next/navigation";
 
 interface LevelSelectorProps {
   onClose: () => void;
-  // onSelectLevel: (level: number) => void;
 }
 
 const levels: {
@@ -19,10 +21,13 @@ const levels: {
   { label: "Cancel", value: -1, isCancel: true },
 ];
 
-const LevelSelector: React.FC<LevelSelectorProps> = ({
-  onClose,
-  // onSelectLevel,
-}) => {
+const LevelSelector: React.FC<LevelSelectorProps> = ({ onClose }) => {
+  const router = useRouter();
+
+  const onSelectLevel = (selectedLevel: number) => {
+    router.push(`/play?level=${selectedLevel}`);
+  };
+
   return (
     <div className={styles.levelSelector}>
       <motion.div
@@ -54,7 +59,7 @@ const LevelSelector: React.FC<LevelSelectorProps> = ({
               damping: 10,
               delay: index * 0.05,
             }}
-            onClick={isCancel ? onClose : undefined}
+            onClick={() => (isCancel ? onClose() : onSelectLevel(value))}
           >
             <p className={styles.label}>
               {emoji ? `${emoji} ${label}` : label}

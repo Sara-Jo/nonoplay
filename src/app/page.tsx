@@ -3,9 +3,10 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import styles from "./page.module.css";
-import LevelSelector from "@/components/LevelSelector";
-import Glitter from "@/components/Glitter";
+
+import Glitter from "@/components/Glitter/Glitter";
 import { useState } from "react";
+import LevelSelector from "@/components/LevelSelector/LevelSelector";
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);

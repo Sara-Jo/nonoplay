@@ -1,4 +1,4 @@
-import Confetti from "./Confetti";
+import Confetti from "../Confetti/Confetti";
 import styles from "./GameEndModal.module.css";
 
 interface GameEndModalProps {

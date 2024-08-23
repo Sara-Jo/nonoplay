@@ -1,15 +1,16 @@
 "use client";
 
-import { useCallback, useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useState, useRef, use } from "react";
 import styles from "./page.module.css";
 import { CellState, GridState, Mode } from "@/types";
 import { generateRandomGrid } from "@/utils/generateRandomgrid";
 import { calculateNumbers } from "@/utils/calculateNumbers";
-import Grid from "@/components/Grid";
-import LevelSelector from "@/components/LevelSelector";
-import Lives from "@/components/Lives";
-import ToggleMode from "@/components/ToggleMode";
-import GameEndModal from "@/components/GameEndModal";
+import Grid from "@/components/Grid/Grid";
+import Lives from "@/components/Lives/Lives";
+import ToggleMode from "@/components/ToggleMode/ToggleMode";
+
+import { useSearchParams } from "next/navigation";
+import GameEndModal from "@/components/GameEndModal/GameEndModal";
 
 const initialLives = 3;
 
@@ -29,6 +30,7 @@ const updateCell = (
   );
 
 export default function Play() {
+  const searchParams = useSearchParams();
   const [level, setLevel] = useState<number>(10);
   const [answerGrid, setAnswerGrid] = useState<GridState | null>(null);
   const [grid, setGrid] = useState<GridState>(initializeGrid(level));
@@ -74,6 +76,13 @@ export default function Play() {
   }, []);
 
   useEffect(() => {
+    const levelParam = searchParams.get("level");
+    if (levelParam) {
+      setLevel(parseInt(levelParam as string));
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
     initializeGame(level);
   }, [level, initializeGame]);
 
@@ -110,12 +119,6 @@ export default function Play() {
     );
 
     return { initialGrid: grid, completedRows, completedColumns };
-  };
-
-  const onSelectLevel = (selectedLevel: number) => {
-    if (selectedLevel !== level) {
-      setLevel(selectedLevel);
-    }
   };
 
   const isRowCompleted = (
@@ -326,8 +329,6 @@ export default function Play() {
       onTouchEnd={handleTouchEnd}
       onTouchMove={handleTouchMove}
     >
-      {/* <LevelSelector selectedLevel={level} onSelectLevel={onSelectLevel} /> */}
-
       <Lives
         initialLives={initialLives}
         remainingLives={lives}
