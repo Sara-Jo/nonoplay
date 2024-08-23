@@ -330,6 +330,10 @@ export default function Play() {
     initializeGame(level);
   };
 
+  const goToMain = () => {
+    router.push("/");
+  };
+
   return (
     <div
       className={styles.main}
@@ -342,9 +346,7 @@ export default function Play() {
           <ArrowBackIosRoundedIcon
             className={styles.backButton}
             color="inherit"
-            onClick={() => {
-              router.push("/");
-            }}
+            onClick={goToMain}
           />
         </div>
         <div className={styles.level}>{levelLabel}</div>
@@ -356,20 +358,22 @@ export default function Play() {
         addLifeRef={addLifeRef}
       />
 
-      <Grid
-        grid={grid}
-        level={level}
-        errorCell={errorCell}
-        completedRows={completedRows}
-        completedColumns={completedColumns}
-        columnNumbers={columnNumbers}
-        rowNumbers={rowNumbers}
-        isDragging={isDragging}
-        handleMouseDown={handleMouseDown}
-        handleMouseEnter={handleMouseEnter}
-        handleTouchStart={handleTouchStart}
-        handleTouchMove={handleTouchMove}
-      />
+      <div className={styles.gridWrapper}>
+        <Grid
+          grid={grid}
+          level={level}
+          errorCell={errorCell}
+          completedRows={completedRows}
+          completedColumns={completedColumns}
+          columnNumbers={columnNumbers}
+          rowNumbers={rowNumbers}
+          isDragging={isDragging}
+          handleMouseDown={handleMouseDown}
+          handleMouseEnter={handleMouseEnter}
+          handleTouchStart={handleTouchStart}
+          handleTouchMove={handleTouchMove}
+        />
+      </div>
 
       <ToggleMode mode={mode} onToggle={toggleMode} />
 
@@ -377,7 +381,7 @@ export default function Play() {
         <GameEndModal
           status={gameStatus}
           onNewGame={handleNewGame}
-          onGoToMain={() => {}}
+          onGoToMain={goToMain}
         />
       )}
     </div>

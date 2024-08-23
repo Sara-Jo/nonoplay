@@ -25,6 +25,10 @@
   font-weight: 500;
 }
 
+.gridWrapper {
+  margin-top: 1rem;
+}
+
 .toggleButton {
   width: 6rem;
   height: 3rem;
