@@ -1,0 +1,89 @@
+.main {
+  height: 100vh;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin-bottom: 1rem;
+  color: var(--dark-color);
+}
+
+.backButtonWrapper {
+  display: flex;
+}
+
+.level {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+}
+
+.gridWrapper {
+  margin-top: 1rem;
+}
+
+.toggleButton {
+  width: 6rem;
+  height: 3rem;
+  margin-top: 3rem;
+  border-radius: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  cursor: pointer;
+  background-color: var(--shade-color);
+}
+
+.toggleIcon {
+  padding: 0.7rem;
+  display: flex;
+  align-items: center;
+}
+
+.toggleSwitch {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background-color: white;
+  position: absolute;
+  transition: transform 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px var(--light-gray);
+}
+
+.toggleSwitch.cross {
+  transform: translateX(0);
+}
+
+.toggleSwitch.fill {
+  transform: translateX(3rem);
+}
+
+@keyframes flash {
+  0% {
+    background-color: var(--light-color);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.flash {
+  animation: flash 0.5s linear;
+}
+
+@media (max-width: 400px) {
+  .main {
+    padding: 1rem;
+  }
+}
