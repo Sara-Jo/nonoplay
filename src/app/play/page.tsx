@@ -8,9 +8,10 @@ import { calculateNumbers } from "@/utils/calculateNumbers";
 import Grid from "@/components/Grid/Grid";
 import Lives from "@/components/Lives/Lives";
 import ToggleMode from "@/components/ToggleMode/ToggleMode";
-
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import GameEndModal from "@/components/GameEndModal/GameEndModal";
+import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
+import { levels } from "@/components/LevelSelector/LevelSelector";
 
 const initialLives = 3;
 
@@ -30,8 +31,10 @@ const updateCell = (
   );
 
 export default function Play() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const [level, setLevel] = useState<number>(10);
+  const [levelLabel, setLevelLabel] = useState<string>("");
   const [answerGrid, setAnswerGrid] = useState<GridState | null>(null);
   const [grid, setGrid] = useState<GridState>(initializeGrid(level));
   const [mode, setMode] = useState<Mode>("fill");
@@ -78,7 +81,12 @@ export default function Play() {
   useEffect(() => {
     const levelParam = searchParams.get("level");
     if (levelParam) {
-      setLevel(parseInt(levelParam as string));
+      const selectedLevel = parseInt(levelParam as string);
+      setLevel(selectedLevel);
+      const selectedLabel = levels.find(
+        (lvl) => lvl.value === selectedLevel
+      )?.label;
+      setLevelLabel(selectedLabel || "");
     }
   }, [searchParams]);
 
@@ -329,6 +337,19 @@ export default function Play() {
       onTouchEnd={handleTouchEnd}
       onTouchMove={handleTouchMove}
     >
+      <div className={styles.header}>
+        <div className={styles.backButtonWrapper}>
+          <ArrowBackIosRoundedIcon
+            className={styles.backButton}
+            color="inherit"
+            onClick={() => {
+              router.push("/");
+            }}
+          />
+        </div>
+        <div className={styles.level}>{levelLabel}</div>
+        <></>
+      </div>
       <Lives
         initialLives={initialLives}
         remainingLives={lives}

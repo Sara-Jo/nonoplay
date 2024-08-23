@@ -6,6 +6,25 @@
   align-items: center;
 }
 
+.header {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  margin-bottom: 1rem;
+  color: var(--dark-color);
+}
+
+.backButtonWrapper {
+  display: flex;
+}
+
+.level {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 500;
+}
+
 .toggleButton {
   width: 6rem;
   height: 3rem;

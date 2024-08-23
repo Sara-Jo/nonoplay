@@ -8,7 +8,7 @@ interface LevelSelectorProps {
   onClose: () => void;
 }
 
-const levels: {
+export const levels: {
   label: string;
   value: number;
   emoji?: string;

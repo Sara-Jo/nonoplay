@@ -41,7 +41,7 @@
 }
 
 .cell.filled {
-  background-color: var(--dark-color);
+  background-color: var(--logo-color);
 }
 
 .cellError {
@@ -68,7 +68,7 @@
   position: absolute;
   width: 80%;
   height: 2px;
-  background-color: var(--dark-color);
+  background-color: var(--logo-color);
 }
 
 .cell.crossed::before {
