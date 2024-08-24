@@ -1,10 +1,10 @@
-import { CellState, GridState, Mode } from "@/types";
-import styles from "./Grid.module.css";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { CellState, GridState, Mode } from "@/types";
 import { initializeGrid } from "@/utils/initializeGrid";
 import { generateRandomGrid } from "@/utils/generateRandomgrid";
 import { calculateNumbers } from "@/utils/calculateNumbers";
 import { initialLives } from "@/utils/constants";
+import styles from "./Grid.module.css";
 
 interface GridProps {
   level: number;
@@ -48,6 +48,27 @@ const Grid: React.FC<GridProps> = ({
   const [isDragging, setIsDragging] = useState(false);
   const touchDeviceRef = useRef<boolean>(false);
 
+  const initializeGame = useCallback(
+    (level: number) => {
+      const newGrid = generateRandomGrid(level);
+      setAnswerGrid(newGrid);
+
+      const { rowNumbers, columnNumbers } = calculateNumbers(newGrid);
+      setRowNumbers(rowNumbers);
+      setColumnNumbers(columnNumbers);
+
+      const { initialGrid, completedRows, completedColumns } =
+        getInitialGridState(level, rowNumbers, columnNumbers);
+
+      setGrid(initialGrid);
+      setCompletedRows(completedRows);
+      setCompletedColumns(completedColumns);
+      setLives(initialLives);
+      setGameStatus("playing");
+    },
+    [setLives, setGameStatus]
+  );
+
   // Initialize game logic, set up grid
   useEffect(() => {
     const newGrid = generateRandomGrid(level);
@@ -59,7 +80,7 @@ const Grid: React.FC<GridProps> = ({
     setCompletedRows(completedRows);
     setCompletedColumns(completedColumns);
     initializeGame(level);
-  }, [level]);
+  }, [level, initializeGame]);
 
   // Check if the game is won
   useEffect(() => {
@@ -102,27 +123,6 @@ const Grid: React.FC<GridProps> = ({
 
     return { initialGrid: grid, completedRows, completedColumns };
   };
-
-  const initializeGame = useCallback(
-    (level: number) => {
-      const newGrid = generateRandomGrid(level);
-      setAnswerGrid(newGrid);
-
-      const { rowNumbers, columnNumbers } = calculateNumbers(newGrid);
-      setRowNumbers(rowNumbers);
-      setColumnNumbers(columnNumbers);
-
-      const { initialGrid, completedRows, completedColumns } =
-        getInitialGridState(level, rowNumbers, columnNumbers);
-
-      setGrid(initialGrid);
-      setCompletedRows(completedRows);
-      setCompletedColumns(completedColumns);
-      setLives(initialLives);
-      setGameStatus("playing");
-    },
-    [setLives, setGameStatus]
-  );
 
   const fillRemainingCells = (index: number, isRow: boolean) => {
     let i = 0;
@@ -191,14 +191,6 @@ const Grid: React.FC<GridProps> = ({
         (row[colIndex] === "filled" &&
           answerGrid[rowIndex][colIndex] === "filled")
     );
-  };
-
-  const updateGridCell = (row: number, col: number, newState: CellState) => {
-    setGrid((prevGrid) => {
-      const updatedGrid = [...prevGrid];
-      updatedGrid[row][col] = newState;
-      return updatedGrid;
-    });
   };
 
   const handleCellClick = (rowIndex: number, colIndex: number) => {

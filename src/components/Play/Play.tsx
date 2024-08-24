@@ -1,16 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import styles from "./Play.module.css";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Mode } from "@/types";
 import Grid from "@/components/Grid/Grid";
 import Lives from "@/components/Lives/Lives";
 import ToggleMode from "@/components/ToggleMode/ToggleMode";
-import { useRouter, useSearchParams } from "next/navigation";
 import GameEndModal from "@/components/GameEndModal/GameEndModal";
-import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
 import { levels } from "@/components/LevelSelector/LevelSelector";
 import { initialLives } from "@/utils/constants";
+import styles from "./Play.module.css";
+import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
 
 export default function Play() {
   const router = useRouter();
