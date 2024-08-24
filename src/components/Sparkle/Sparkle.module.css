@@ -1,0 +1,17 @@
+.sparkleContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.sparkle {
+  position: absolute;
+  width: 10px; /* Adjust size as needed */
+  height: 10px;
+  border-radius: 50%;
+  background-color: white; /* White color for the sparkles */
+  pointer-events: none; /* Ensure sparkles don't interfere with other UI elements */
+}

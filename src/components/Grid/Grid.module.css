@@ -12,7 +12,6 @@
 }
 
 .cell {
-  /* border: 1px solid var(--shade-color); */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -92,9 +91,13 @@
 .cell.crossed::before {
   transform: rotate(45deg);
 }
-
 .cell.crossed::after {
   transform: rotate(-45deg);
+}
+
+.cell.gameWon.crossed::before,
+.cell.gameWon.crossed::after {
+  display: none; /* Hide crosses when game is won */
 }
 
 @keyframes flash {
@@ -125,15 +128,12 @@
 .columnNumbers-5 {
   width: 4rem;
 }
-
 .columnNumbers-10 {
   width: 3rem;
 }
-
 .columnNumbers-15 {
   width: 2rem;
 }
-
 .columnNumbers-20 {
   width: 1.5rem;
 }
@@ -205,20 +205,21 @@
   font-size: 1rem;
   height: 2rem;
 }
-
 .number-10 {
   font-size: 1rem;
   height: 1.8rem;
 }
-
 .number-15 {
   font-size: 0.9rem;
   height: 1.3rem;
 }
-
 .number-20 {
   font-size: 0.8rem;
   height: 1.1rem;
+}
+
+.gameWon {
+  background-color: "yellow";
 }
 
 /* Responsive styles */
