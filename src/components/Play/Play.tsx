@@ -23,6 +23,7 @@ export default function Play() {
   const [gameStatus, setGameStatus] = useState<"won" | "lost" | "playing">(
     "playing"
   );
+  const [newGameKey, setNewGameKey] = useState<number>(0);
 
   useEffect(() => {
     const levelParam = searchParams.get("level");
@@ -41,8 +42,9 @@ export default function Play() {
   };
 
   const handleNewGame = () => {
-    setLives(initialLives);
-    setGameStatus("playing");
+    // setLives(initialLives);
+    // setGameStatus("playing");
+    setNewGameKey((prevKey) => prevKey + 1);
   };
 
   const goToMain = () => {
@@ -82,6 +84,7 @@ export default function Play() {
           setLives={setLives}
           lifeRefs={lifeRefs}
           setGameStatus={setGameStatus}
+          newGameKey={newGameKey}
         />
       </div>
 

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { use, useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { CellState, GridState, Mode } from "@/types";
 import { initializeGrid } from "@/utils/initializeGrid";
@@ -15,6 +15,7 @@ interface GridProps {
   setLives: (lives: number) => void;
   lifeRefs: HTMLDivElement[];
   setGameStatus: (status: "won" | "lost" | "playing") => void;
+  newGameKey: number;
 }
 
 const updateCell = (
@@ -36,6 +37,7 @@ const Grid: React.FC<GridProps> = ({
   setLives,
   lifeRefs,
   setGameStatus,
+  newGameKey,
 }) => {
   const [answerGrid, setAnswerGrid] = useState<GridState | null>(null);
   const [grid, setGrid] = useState<GridState>(initializeGrid(level));
@@ -68,13 +70,14 @@ const Grid: React.FC<GridProps> = ({
       setCompletedColumns(completedColumns);
       setLives(initialLives);
       setGameStatus("playing");
+      setIsGameWon(false);
     },
     [setLives, setGameStatus]
   );
 
   useEffect(() => {
     initializeGame(level);
-  }, [level, initializeGame]);
+  }, [level, newGameKey, initializeGame]);
 
   // Check if the game is won
   useEffect(() => {
@@ -356,50 +359,21 @@ const Grid: React.FC<GridProps> = ({
                   errorCell?.row === rowIndex && errorCell?.col === colIndex;
 
                 return (
-                  // <div
-                  //   key={colIndex}
-                  //   data-row={rowIndex}
-                  //   data-col={colIndex}
-                  //   className={`cell row-${rowIndex} col-${colIndex} ${
-                  //     styles[`cell-${level}`]
-                  //   } ${styles.cell} ${
-                  //     cell === "filled"
-                  //       ? styles.filled
-                  //       : cell === "crossed"
-                  //       ? styles.crossed
-                  //       : ""
-                  //   } ${isError ? styles.cellError : ""} ${
-                  //     isBoldLeft ? styles.boldLeft : ""
-                  //   } ${isBoldTop ? styles.boldTop : ""} ${
-                  //     isBoldRight ? styles.boldRight : ""
-                  //   } ${isBoldBottom ? styles.boldBottom : ""}`}
-                  //   onMouseDown={(e) => handleMouseDown(e, rowIndex, colIndex)}
-                  //   onMouseEnter={(e) =>
-                  //     handleMouseEnter(e, rowIndex, colIndex)
-                  //   }
-                  //   onTouchStart={(e) =>
-                  //     handleTouchStart(e, rowIndex, colIndex)
-                  //   }
-                  //   onTouchMove={(e) => handleTouchMove(e)}
-                  // ></div>
-                  <motion.div
+                  <div
                     key={colIndex}
                     data-row={rowIndex}
                     data-col={colIndex}
                     className={`cell row-${rowIndex} col-${colIndex} ${
                       styles[`cell-${level}`]
                     } ${styles.cell} ${
-                      cell === "filled"
-                        ? styles.filled
-                        : cell === "crossed"
-                        ? styles.crossed
-                        : ""
-                    } ${isError ? styles.cellError : ""} ${
-                      isBoldLeft ? styles.boldLeft : ""
-                    } ${isBoldTop ? styles.boldTop : ""} ${
-                      isBoldRight ? styles.boldRight : ""
-                    } ${isBoldBottom ? styles.boldBottom : ""}
-                    ${isGameWon ? styles.gameWon : ""}`}
+                      cell === "filled" ? styles.filled : ""
+                    } ${cell === "crossed" ? styles.crossed : ""} ${
+                      isError ? styles.cellError : ""
+                    } ${isBoldLeft ? styles.boldLeft : ""} ${
+                      isBoldTop ? styles.boldTop : ""
+                    } ${isBoldRight ? styles.boldRight : ""} ${
+                      isBoldBottom ? styles.boldBottom : ""
+                    } `}
                     onMouseDown={(e) => handleMouseDown(e, rowIndex, colIndex)}
                     onMouseEnter={(e) =>
                       handleMouseEnter(e, rowIndex, colIndex)
@@ -408,22 +382,9 @@ const Grid: React.FC<GridProps> = ({
                       handleTouchStart(e, rowIndex, colIndex)
                     }
                     onTouchMove={(e) => handleTouchMove(e)}
-                    animate={{
-                      backgroundColor: isGameWon
-                        ? cell === "filled"
-                          ? "#f29b80"
-                          : "#d8c6d2"
-                        : undefined,
-                      scale: isGameWon ? [1, 1.2, 1] : 1,
-                    }}
-                    transition={{
-                      delay: (rowIndex + colIndex) * 0.1,
-                      duration: 0.5,
-                      ease: "easeInOut",
-                    }}
                   >
                     {isGameWon && <Sparkle />}
-                  </motion.div>
+                  </div>
                 );
               })}
             </div>
