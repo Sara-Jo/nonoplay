@@ -72,16 +72,7 @@ const Grid: React.FC<GridProps> = ({
     [setLives, setGameStatus]
   );
 
-  // Initialize game logic, set up grid
   useEffect(() => {
-    const newGrid = generateRandomGrid(level);
-    setAnswerGrid(newGrid);
-    const { rowNumbers, columnNumbers } = calculateNumbers(newGrid);
-    const { initialGrid, completedRows, completedColumns } =
-      getInitialGridState(level, rowNumbers, columnNumbers);
-    setGrid(initialGrid);
-    setCompletedRows(completedRows);
-    setCompletedColumns(completedColumns);
     initializeGame(level);
   }, [level, initializeGame]);
 
