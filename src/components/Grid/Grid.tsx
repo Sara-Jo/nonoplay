@@ -83,7 +83,11 @@ const Grid: React.FC<GridProps> = ({
   useEffect(() => {
     if (completedRows.length === level && completedColumns.length === level) {
       setIsGameWon(true);
-      setTimeout(() => setGameStatus("won"), level * level * 100);
+
+      const maxDelay = (level - 1 + (level - 1)) * 0.1;
+      const animationDuration = 0.5 + level * 0.05;
+      const totalAnimationTime = (maxDelay + animationDuration) * 1000;
+      setTimeout(() => setGameStatus("won"), totalAnimationTime);
     }
   }, [completedRows.length, completedColumns.length, level, setGameStatus]);
 
@@ -359,21 +363,25 @@ const Grid: React.FC<GridProps> = ({
                   errorCell?.row === rowIndex && errorCell?.col === colIndex;
 
                 return (
-                  <div
+                  <motion.div
                     key={colIndex}
                     data-row={rowIndex}
                     data-col={colIndex}
                     className={`cell row-${rowIndex} col-${colIndex} ${
                       styles[`cell-${level}`]
                     } ${styles.cell} ${
-                      cell === "filled" ? styles.filled : ""
-                    } ${cell === "crossed" ? styles.crossed : ""} ${
-                      isError ? styles.cellError : ""
-                    } ${isBoldLeft ? styles.boldLeft : ""} ${
-                      isBoldTop ? styles.boldTop : ""
-                    } ${isBoldRight ? styles.boldRight : ""} ${
-                      isBoldBottom ? styles.boldBottom : ""
-                    } `}
+                      cell === "filled"
+                        ? styles.filled
+                        : cell === "crossed"
+                        ? styles.crossed
+                        : ""
+                    } ${isError ? styles.cellError : ""} ${
+                      isBoldLeft ? styles.boldLeft : ""
+                    } ${isBoldTop ? styles.boldTop : ""} ${
+                      isBoldRight ? styles.boldRight : ""
+                    } ${isBoldBottom ? styles.boldBottom : ""} ${
+                      isGameWon ? styles.gameWon : ""
+                    }`}
                     onMouseDown={(e) => handleMouseDown(e, rowIndex, colIndex)}
                     onMouseEnter={(e) =>
                       handleMouseEnter(e, rowIndex, colIndex)
@@ -382,9 +390,15 @@ const Grid: React.FC<GridProps> = ({
                       handleTouchStart(e, rowIndex, colIndex)
                     }
                     onTouchMove={(e) => handleTouchMove(e)}
-                  >
-                    {isGameWon && <Sparkle />}
-                  </div>
+                    animate={{
+                      scale: isGameWon ? [1, 1.3, 1] : 1,
+                    }}
+                    transition={{
+                      delay: (rowIndex + colIndex) * 0.1,
+                      duration: 0.5,
+                      ease: "easeInOut",
+                    }}
+                  ></motion.div>
                 );
               })}
             </div>

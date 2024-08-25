@@ -24,15 +24,12 @@
 .cell.boldLeft {
   border-left: 2px solid black;
 }
-
 .cell.boldTop {
   border-top: 2px solid black;
 }
-
 .cell.boldRight {
   border-right: 2px solid black;
 }
-
 .cell.boldBottom {
   border-bottom: 2px solid black;
 }
@@ -41,17 +38,14 @@
   width: 4rem;
   height: 4rem;
 }
-
 .cell-10 {
   width: 3rem;
   height: 3rem;
 }
-
 .cell-15 {
   width: 2rem;
   height: 2rem;
 }
-
 .cell-20 {
   width: 1.5rem;
   height: 1.5rem;
@@ -216,10 +210,6 @@
 .number-20 {
   font-size: 0.8rem;
   height: 1.1rem;
-}
-
-.gameWon {
-  background-color: "yellow";
 }
 
 /* Responsive styles */
