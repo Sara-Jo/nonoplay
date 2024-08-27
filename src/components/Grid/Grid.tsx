@@ -361,6 +361,9 @@ const Grid: React.FC<GridProps> = ({
                 const isBoldBottom = rowIndex === grid.length - 1;
                 const isError =
                   errorCell?.row === rowIndex && errorCell?.col === colIndex;
+                const delay = isGameWon
+                  ? (rowIndex + colIndex) * 0.1
+                  : (rowIndex + colIndex) * 0.02;
 
                 return (
                   <motion.div
@@ -390,11 +393,14 @@ const Grid: React.FC<GridProps> = ({
                       handleTouchStart(e, rowIndex, colIndex)
                     }
                     onTouchMove={(e) => handleTouchMove(e)}
+                    initial={{ opacity: 0, y: -20 }}
                     animate={{
                       scale: isGameWon ? [1, 1.3, 1] : 1,
+                      opacity: 1,
+                      y: 0,
                     }}
                     transition={{
-                      delay: (rowIndex + colIndex) * 0.1,
+                      delay,
                       duration: 0.5,
                       ease: "easeInOut",
                     }}

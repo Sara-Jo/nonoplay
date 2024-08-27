@@ -46,16 +46,7 @@ export default function Home() {
       >
         Game Start
       </motion.div>
-      {isModalOpen && (
-        <div className={styles.modalOverlay}>
-          <div
-            className={styles.modalContainer}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <LevelSelector onClose={handleCloseModal} />
-          </div>
-        </div>
-      )}
+      {isModalOpen && <LevelSelector onClose={handleCloseModal} />}
     </div>
   );
 }

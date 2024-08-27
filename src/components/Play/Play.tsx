@@ -7,7 +7,9 @@ import Grid from "@/components/Grid/Grid";
 import Lives from "@/components/Lives/Lives";
 import ToggleMode from "@/components/ToggleMode/ToggleMode";
 import GameEndModal from "@/components/GameEndModal/GameEndModal";
-import { levels } from "@/components/LevelSelector/LevelSelector";
+import LevelSelector, {
+  levels,
+} from "@/components/LevelSelector/LevelSelector";
 import { initialLives } from "@/utils/constants";
 import styles from "./Play.module.css";
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
@@ -24,6 +26,7 @@ export default function Play() {
     "playing"
   );
   const [newGameKey, setNewGameKey] = useState<number>(0);
+  const [isLevelSeletorOpen, setIsLevelSelectorOpen] = useState(false);
 
   useEffect(() => {
     const levelParam = searchParams.get("level");
@@ -42,9 +45,9 @@ export default function Play() {
   };
 
   const handleNewGame = () => {
-    // setLives(initialLives);
     // setGameStatus("playing");
-    setNewGameKey((prevKey) => prevKey + 1);
+    setIsLevelSelectorOpen(true);
+    // setNewGameKey((prevKey) => prevKey + 1);
   };
 
   const goToMain = () => {
@@ -96,6 +99,10 @@ export default function Play() {
           onNewGame={handleNewGame}
           onGoToMain={goToMain}
         />
+      )}
+
+      {isLevelSeletorOpen && (
+        <LevelSelector onClose={() => setIsLevelSelectorOpen(false)} />
       )}
     </div>
   );
