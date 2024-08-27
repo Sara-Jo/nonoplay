@@ -1,7 +1,7 @@
 .main {
   display: flex;
   flex-direction: column;
-  justify-content: end;
+  justify-content: center;
   align-items: center;
   height: 100vh;
   position: relative;
@@ -14,14 +14,13 @@
   transform: translate(-50%, -50%);
   width: 100px;
   height: 100px;
-  z-index: 1;
 }
 
 .logoContainer {
-  position: absolute;
   top: 0;
   display: flex;
   justify-content: center;
+  z-index: 1000;
 }
 
 .logo {
@@ -32,7 +31,7 @@
 .startButton {
   width: 15rem;
   height: 4rem;
-  margin-bottom: 10rem;
+  margin-top: 10rem;
   border-radius: 2rem;
   display: flex;
   align-items: center;
@@ -81,7 +80,7 @@
 
 @media (max-width: 430px) {
   .logo {
-    max-width: 35rem;
+    max-width: 18rem;
   }
 
   .startButton {

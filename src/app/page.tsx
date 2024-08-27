@@ -26,8 +26,8 @@ export default function Home() {
         <Image
           src="/logo.png"
           alt="image"
-          width={800}
-          height={800}
+          width={400}
+          height={400}
           className={styles.logo}
         />
       </div>

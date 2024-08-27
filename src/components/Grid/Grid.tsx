@@ -1,4 +1,4 @@
-import { use, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { CellState, GridState, Mode } from "@/types";
 import { initializeGrid } from "@/utils/initializeGrid";
