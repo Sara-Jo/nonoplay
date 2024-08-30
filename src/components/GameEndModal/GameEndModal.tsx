@@ -5,12 +5,14 @@ interface GameEndModalProps {
   status: "won" | "lost";
   onNewGame: () => void;
   onGoToMain: () => void;
+  restart: () => void;
 }
 
 const GameEndModal: React.FC<GameEndModalProps> = ({
   status,
   onNewGame,
   onGoToMain,
+  restart,
 }) => {
   return (
     <div className={styles.modalOverlay}>
@@ -44,7 +46,7 @@ const GameEndModal: React.FC<GameEndModalProps> = ({
             <div className={styles.buttonContainer}>
               <div
                 className={`${styles.button} ${styles.darkBackground}`}
-                onClick={onNewGame}
+                onClick={restart}
               >
                 Restart
               </div>

@@ -45,9 +45,12 @@ export default function Play() {
   };
 
   const handleNewGame = () => {
-    // setGameStatus("playing");
     setIsLevelSelectorOpen(true);
-    // setNewGameKey((prevKey) => prevKey + 1);
+  };
+
+  const restartGame = () => {
+    setGameStatus("playing");
+    setNewGameKey((prevKey) => prevKey + 1);
   };
 
   const goToMain = () => {
@@ -98,11 +101,16 @@ export default function Play() {
           status={gameStatus}
           onNewGame={handleNewGame}
           onGoToMain={goToMain}
+          restart={restartGame}
         />
       )}
 
       {isLevelSeletorOpen && (
-        <LevelSelector onClose={() => setIsLevelSelectorOpen(false)} />
+        <LevelSelector
+          onClose={() => setIsLevelSelectorOpen(false)}
+          currentLevel={level}
+          restart={restartGame}
+        />
       )}
     </div>
   );

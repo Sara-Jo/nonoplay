@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 
 interface LevelSelectorProps {
   onClose: () => void;
+  currentLevel?: number;
+  restart?: () => void;
 }
 
 export const levels: {
@@ -21,11 +23,20 @@ export const levels: {
   { label: "Cancel", value: -1, isCancel: true },
 ];
 
-const LevelSelector: React.FC<LevelSelectorProps> = ({ onClose }) => {
+const LevelSelector: React.FC<LevelSelectorProps> = ({
+  onClose,
+  currentLevel,
+  restart,
+}) => {
   const router = useRouter();
 
   const onSelectLevel = (selectedLevel: number) => {
-    router.push(`/play?level=${selectedLevel}`);
+    if (currentLevel && currentLevel === selectedLevel && restart) {
+      restart();
+    } else {
+      router.push(`/play?level=${selectedLevel}`);
+    }
+
     onClose();
   };
 
