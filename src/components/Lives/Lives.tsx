@@ -2,18 +2,15 @@ import React from "react";
 import styles from "./Lives.module.css";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import { useGameContext } from "@/context/GameContext";
+import { initialLives } from "@/utils/constants";
 
 interface LivesProps {
-  initialLives: number;
-  remainingLives: number;
   addLifeRef: (ref: HTMLDivElement | null) => void;
 }
 
-const Lives: React.FC<LivesProps> = ({
-  initialLives,
-  remainingLives,
-  addLifeRef,
-}) => {
+const Lives: React.FC<LivesProps> = ({ addLifeRef }) => {
+  const { lives: remainingLives } = useGameContext();
   return (
     <div className={styles.lives}>
       {Array.from({ length: initialLives }).map((_, index) => (

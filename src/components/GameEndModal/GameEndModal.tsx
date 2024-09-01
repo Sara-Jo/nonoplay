@@ -1,25 +1,30 @@
+import { useGameContext } from "@/context/GameContext";
 import Confetti from "../Confetti/Confetti";
 import styles from "./GameEndModal.module.css";
 
 interface GameEndModalProps {
-  status: "won" | "lost";
   onNewGame: () => void;
   onGoToMain: () => void;
   restart: () => void;
 }
 
 const GameEndModal: React.FC<GameEndModalProps> = ({
-  status,
   onNewGame,
   onGoToMain,
   restart,
 }) => {
+  const { gameStatus } = useGameContext();
+
+  if (gameStatus === "playing") {
+    return null;
+  }
+
   return (
     <div className={styles.modalOverlay}>
-      {status === "won" && <Confetti />}
+      {gameStatus === "won" && <Confetti />}
 
       <div className={styles.modalContent}>
-        {status === "won" ? (
+        {gameStatus === "won" ? (
           <>
             <h2 className={styles.title}>Game Complete!</h2>
             <div className={styles.animation}>

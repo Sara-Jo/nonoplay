@@ -10,9 +10,9 @@ import GameEndModal from "@/components/GameEndModal/GameEndModal";
 import LevelSelector, {
   levels,
 } from "@/components/LevelSelector/LevelSelector";
-import { initialLives } from "@/utils/constants";
 import styles from "./Play.module.css";
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
+import { GameProvider } from "@/context/GameContext";
 
 export default function Play() {
   const router = useRouter();
@@ -20,11 +20,7 @@ export default function Play() {
   const [level, setLevel] = useState<number>(10);
   const [levelLabel, setLevelLabel] = useState<string>("");
   const [mode, setMode] = useState<Mode>("fill");
-  const [lives, setLives] = useState<number>(initialLives);
   const [lifeRefs, setLifeRefs] = useState<HTMLDivElement[]>([]);
-  const [gameStatus, setGameStatus] = useState<"won" | "lost" | "playing">(
-    "playing"
-  );
   const [newGameKey, setNewGameKey] = useState<number>(0);
   const [isLevelSeletorOpen, setIsLevelSelectorOpen] = useState(false);
 
@@ -49,7 +45,6 @@ export default function Play() {
   };
 
   const restartGame = () => {
-    setGameStatus("playing");
     setNewGameKey((prevKey) => prevKey + 1);
   };
 
@@ -64,54 +59,46 @@ export default function Play() {
   };
 
   return (
-    <div className={styles.main}>
-      <div className={styles.header}>
-        <div className={styles.backButtonWrapper}>
-          <ArrowBackIosRoundedIcon
-            className={styles.backButton}
-            color="inherit"
-            onClick={goToMain}
+    <GameProvider>
+      <div className={styles.main}>
+        <div className={styles.header}>
+          <div className={styles.backButtonWrapper}>
+            <ArrowBackIosRoundedIcon
+              className={styles.backButton}
+              color="inherit"
+              onClick={goToMain}
+            />
+          </div>
+          <div className={styles.level}>{levelLabel}</div>
+          <></>
+        </div>
+        <Lives addLifeRef={addLifeRef} />
+
+        <div className={styles.gridWrapper}>
+          <Grid
+            level={level}
+            mode={mode}
+            lifeRefs={lifeRefs}
+            newGameKey={newGameKey}
           />
         </div>
-        <div className={styles.level}>{levelLabel}</div>
-        <></>
-      </div>
-      <Lives
-        initialLives={initialLives}
-        remainingLives={lives}
-        addLifeRef={addLifeRef}
-      />
 
-      <div className={styles.gridWrapper}>
-        <Grid
-          level={level}
-          mode={mode}
-          lives={lives}
-          setLives={setLives}
-          lifeRefs={lifeRefs}
-          setGameStatus={setGameStatus}
-          newGameKey={newGameKey}
-        />
-      </div>
+        <ToggleMode mode={mode} onToggle={toggleMode} />
 
-      <ToggleMode mode={mode} onToggle={toggleMode} />
-
-      {gameStatus !== "playing" && (
         <GameEndModal
-          status={gameStatus}
           onNewGame={handleNewGame}
           onGoToMain={goToMain}
           restart={restartGame}
         />
-      )}
 
-      {isLevelSeletorOpen && (
-        <LevelSelector
-          onClose={() => setIsLevelSelectorOpen(false)}
-          currentLevel={level}
-          restart={restartGame}
-        />
-      )}
-    </div>
+        {isLevelSeletorOpen && (
+          <LevelSelector
+            onClose={() => setIsLevelSelectorOpen(false)}
+            currentLevel={level}
+            restart={restartGame}
+          />
+        )}
+      </div>
+    </GameProvider>
   );
 }

@@ -6,15 +6,12 @@ import { generateRandomGrid } from "@/utils/generateRandomgrid";
 import { calculateNumbers } from "@/utils/calculateNumbers";
 import { initialLives } from "@/utils/constants";
 import styles from "./Grid.module.css";
-import Sparkle from "../Sparkle/Sparkle";
+import { useGameContext } from "@/context/GameContext";
 
 interface GridProps {
   level: number;
   mode: Mode;
-  lives: number;
-  setLives: (lives: number) => void;
   lifeRefs: HTMLDivElement[];
-  setGameStatus: (status: "won" | "lost" | "playing") => void;
   newGameKey: number;
 }
 
@@ -30,15 +27,8 @@ const updateCell = (
     )
   );
 
-const Grid: React.FC<GridProps> = ({
-  level,
-  mode,
-  lives,
-  setLives,
-  lifeRefs,
-  setGameStatus,
-  newGameKey,
-}) => {
+const Grid: React.FC<GridProps> = ({ level, mode, lifeRefs, newGameKey }) => {
+  const { lives, setLives, setGameStatus } = useGameContext();
   const [answerGrid, setAnswerGrid] = useState<GridState | null>(null);
   const [grid, setGrid] = useState<GridState>(initializeGrid(level));
   const [rowNumbers, setRowNumbers] = useState<number[][]>([]);
